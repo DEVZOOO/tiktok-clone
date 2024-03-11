@@ -8,11 +8,12 @@ import 'package:tiktok_clone/features/authentication/widget/auth_button.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
-  /// signup 링크 클릭
+  /// signup 링크 탭
   void _onSignupTap(BuildContext context) {
     Navigator.of(context).pop(); // Navigator 가장 상단 화면 stack에서 제거
   }
 
+  /// 이메일 로그인 버튼 탭
   void _onEmailLoginTab(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
