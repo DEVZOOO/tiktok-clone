@@ -83,6 +83,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     */
 
     return Scaffold(
+      resizeToAvoidBottomInset: false, // 키보드 오픈시 화면 조절하지 않음
+      backgroundColor:
+          _selectedIndex == 0 ? Colors.black : Colors.white, // 첫번째 화면에서만 블랙
       // body: screens[_selectedIndex],
       body: Stack(
         children: [

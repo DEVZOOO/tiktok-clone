@@ -17,7 +17,7 @@ class PostVideoButton extends StatelessWidget {
       clipBehavior: Clip.none, // 영역 벗어난거 자르지 않음
       children: [
         AnimatedPositioned(
-          duration: const Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 150),
           right: Sizes.size20,
           top: isLongTab ? -5 : 0,
           child: Container(
