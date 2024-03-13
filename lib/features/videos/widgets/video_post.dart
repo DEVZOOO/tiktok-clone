@@ -73,6 +73,11 @@ class _VideoPostState extends State<VideoPost>
         !_videoPlayerController.value.isPlaying) {
       _videoPlayerController.play();
     }
+
+    // 영상이 재생되고 있는데 전혀 보이지 않으면(화면에서 보이지 않으면)
+    if (_videoPlayerController.value.isPlaying && info.visibleFraction == 0) {
+      _onTogglePause();
+    }
   }
 
   /// 영상 위의 GestureDetector 탭 이벤트
@@ -157,17 +162,22 @@ class _VideoPostState extends State<VideoPost>
       onVisibilityChanged: _onVisibilityChange,
       child: Stack(
         children: [
+          // 영상
           Positioned.fill(
             // 화면 전체 채우기
             child: _videoPlayerController.value.isInitialized
                 ? VideoPlayer(_videoPlayerController)
                 : Container(color: Colors.black),
           ),
+
+          // 클릭
           Positioned.fill(
             child: GestureDetector(
               onTap: _onTogglePause,
             ),
           ),
+
+          // 재생/일시정지 아이콘
           Positioned.fill(
             child: IgnorePointer(
               // 이벤트 무시, 상위에 전달
