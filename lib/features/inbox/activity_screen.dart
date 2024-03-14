@@ -48,7 +48,7 @@ class _ActivityScreenState extends State<ActivityScreen>
   /// animatin controller 생성
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 300),
+    duration: const Duration(milliseconds: 200),
   );
 
   /// arrow animation 정의 및 controller와 연결
@@ -97,6 +97,7 @@ class _ActivityScreenState extends State<ActivityScreen>
           onTap: _toggleAnimation,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               const Text('All activity'),
               Gaps.h2,
@@ -129,7 +130,7 @@ class _ActivityScreenState extends State<ActivityScreen>
 
               Gaps.v14,
 
-              // 알림영역
+              // 알림 리스트 영역
               for (var noti in _notifications)
                 Dismissible(
                   key: Key(noti),
