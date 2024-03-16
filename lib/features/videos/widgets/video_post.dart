@@ -68,6 +68,10 @@ class _VideoPostState extends State<VideoPost>
 
   /// 화면에 표시되는 정도 변경 이벤트
   void _onVisibilityChange(VisibilityInfo info) {
+    // ## widget mounted 되었다면 보여짐(위젯트리에 있음) / false면 안보여짐
+    // mounted 됬을 때만 아래 실행!
+    if (!mounted) return;
+
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
