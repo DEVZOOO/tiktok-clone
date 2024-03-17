@@ -1,6 +1,3 @@
 # tiktok_clone
 
-TikTok Clone Project from nomadcoders
-
-[link](https://nomadcoders.co/tiktok-clone)
-
+[TikTok Clone](https://nomadcoders.co/tiktok-clone) from nomadcoders
