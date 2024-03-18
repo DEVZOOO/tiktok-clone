@@ -4,6 +4,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/login_form_screen.dart';
 import 'package:tiktok_clone/features/authentication/widget/auth_button.dart';
+import 'package:tiktok_clone/utils.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -41,13 +42,15 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               Gaps.v20,
-              const Text(
-                'Manage your account, check notifications, comment on videos, and more.',
-                style: TextStyle(
-                  fontSize: Sizes.size16,
-                  color: Colors.black45,
+              const Opacity(
+                opacity: .7,
+                child: Text(
+                  'Manage your account, check notifications, comment on videos, and more.',
+                  style: TextStyle(
+                    fontSize: Sizes.size16,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
 
               // buttons
@@ -67,9 +70,10 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        elevation: 10,
-        shadowColor: Colors.black,
-        surfaceTintColor: Colors.grey.shade50,
+        // elevation: 10,
+        // shadowColor: Colors.black,
+        // surfaceTintColor: Colors.grey.shade50,
+        color: isDartMode(context) ? null : Colors.grey,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: Sizes.size28),
           child: Row(

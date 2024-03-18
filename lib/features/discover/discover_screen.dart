@@ -157,8 +157,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   .onDrag, // drag할대마다 키보드 자동 사라짐
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: width > Breakpoints.lg ? 5 : 2, // column 몇개 가질지
-                crossAxisSpacing: Sizes.size10, // column 사이 간격
-                mainAxisSpacing: Sizes.size10, // row 사이 간격
+                crossAxisSpacing: width > Breakpoints.lg
+                    ? Sizes.size10
+                    : Sizes.size5, // column 사이 간격
+                mainAxisSpacing: width > Breakpoints.lg
+                    ? Sizes.size10
+                    : Sizes.size5, // row 사이 간격
                 childAspectRatio: 9 / 20, // 이미지 아래 다른 요소들이 있어서 세로 키움
               ),
               padding: const EdgeInsets.all(Sizes.size6),
@@ -189,7 +193,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     const Text(
                       'This is a very long caption for my tiktok that im upload just now currently.',
                       style: TextStyle(
-                        fontSize: Sizes.size16 + Sizes.size2,
+                        fontSize: Sizes.size16,
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 2, // 최대 로우

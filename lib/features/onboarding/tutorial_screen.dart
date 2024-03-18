@@ -5,6 +5,7 @@ import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 import 'package:tiktok_clone/features/main_navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/features/onboarding/tutorial_1_screen.dart';
 import 'package:tiktok_clone/features/onboarding/tutorial_2_screen.dart';
+import 'package:tiktok_clone/utils.dart';
 
 // drag 방향
 enum Direction {
@@ -190,6 +191,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
+          color: isDartMode(context) ? Colors.black : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(Sizes.size24),
             child: AnimatedOpacity(

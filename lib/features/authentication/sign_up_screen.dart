@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/login_screen.dart';
 import 'package:tiktok_clone/features/authentication/username_screen.dart';
 import 'package:tiktok_clone/features/authentication/widget/auth_button.dart';
+import 'package:tiktok_clone/utils.dart';
 
 /// 회원가입 화면
 class SignUpScreen extends StatelessWidget {
@@ -63,13 +65,18 @@ class SignUpScreen extends StatelessWidget {
                       ),
                     ),
                     Gaps.v20,
-                    const Text(
-                      'Create a profile, follow other accounts, make your own videos, and more.',
-                      style: TextStyle(
-                        fontSize: Sizes.size16,
-                        color: Colors.black45,
+                    const Opacity(
+                      opacity: .7,
+                      child: Text(
+                        'Create a profile, follow other accounts, make your own videos, and more.',
+                        style: TextStyle(
+                          fontSize: Sizes.size16,
+                          // color: isDartMode(context)
+                          //     ? Colors.grey.shade300
+                          //     : Colors.black45,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                     Gaps.v40,
 
@@ -113,9 +120,9 @@ class SignUpScreen extends StatelessWidget {
               ),
             ),
             bottomNavigationBar: BottomAppBar(
-              elevation: 10,
-              shadowColor: Colors.black,
-              surfaceTintColor: Colors.grey.shade50,
+              // elevation: 10,
+              // shadowColor: Colors.black,
+              // surfaceTintColor: Colors.grey.shade50,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: Sizes.size28),
                 child: Row(
