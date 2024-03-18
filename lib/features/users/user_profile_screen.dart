@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/settings/settings_screen.dart';
@@ -27,6 +29,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: DefaultTabController(
         length: 2,
@@ -268,7 +272,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ],
                   ),
 
-                  Gaps.v5,
+                  Gaps.v10,
 
                   // desc
                   const Padding(
@@ -303,6 +307,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ],
               ),
             ),
+
             // Tabs
             SliverPersistentHeader(
               delegate: PersistentTabBar(),
@@ -316,10 +321,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               GridView.builder(
                 keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior
                     .onDrag, // drag할대마다 키보ㅡ드 자동 사라짐
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // column 몇개 가질지
-                  crossAxisSpacing: Sizes.size2, // column 사이 간격
-                  mainAxisSpacing: Sizes.size2, // row 사이 간격
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:
+                      size.width > Breakpoints.lg ? 5 : 3, // column 몇개 가질지
+                  crossAxisSpacing: size.width > Breakpoints.lg
+                      ? Sizes.size4
+                      : Sizes.size2, // column 사이 간격
+                  mainAxisSpacing: size.width > Breakpoints.lg
+                      ? Sizes.size4
+                      : Sizes.size2, // row 사이 간격
                   childAspectRatio: 9 / 14, // 이미지 아래 다른 요소들이 있어서 세로 키움
                 ),
                 padding: EdgeInsets.zero,

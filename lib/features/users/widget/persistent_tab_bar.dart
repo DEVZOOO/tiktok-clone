@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 
 class PersistentTabBar extends SliverPersistentHeaderDelegate {
@@ -7,6 +8,7 @@ class PersistentTabBar extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
+      constraints: const BoxConstraints(maxWidth: 50),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.symmetric(

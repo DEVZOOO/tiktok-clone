@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -36,6 +37,9 @@ class _VideoPostState extends State<VideoPost>
   // 영상 정보 펼치기 여부
   bool _seeAll = false;
 
+  /// 음소거 여부, web이면 true
+  bool _isMute = kIsWeb;
+
   /// 영상 변경 이벤트
   void _onVideoChange() {
     // 초기화 여부
@@ -58,6 +62,11 @@ class _VideoPostState extends State<VideoPost>
 
     // 반복재생
     await _videoPlayerController.setLooping(true);
+
+    // web이라면 음소거처리
+    if (kIsWeb) {
+      await _videoPlayerController.setVolume(0);
+    }
 
     // 상태 업데이트
     setState(() {});
@@ -101,7 +110,6 @@ class _VideoPostState extends State<VideoPost>
 
   /// see all 클릭
   void _onToggleSeeAll() {
-    print('seee more');
     setState(() {
       _seeAll = !_seeAll;
     });
@@ -128,6 +136,19 @@ class _VideoPostState extends State<VideoPost>
 
     // bottom sheet 닫힘
     _onTogglePause();
+  }
+
+  /// 음소거/해제
+  void _toggleVolume() {
+    if (_isMute) {
+      _videoPlayerController.setVolume(100);
+    } else {
+      _videoPlayerController.setVolume(0);
+    }
+
+    setState(() {
+      _isMute = !_isMute;
+    });
   }
 
   @override
@@ -289,6 +310,20 @@ class _VideoPostState extends State<VideoPost>
             right: 10,
             child: Column(
               children: [
+                // 음소거 버튼
+                // challenge 1
+                if (kIsWeb)
+                  GestureDetector(
+                    onTap: _toggleVolume,
+                    child: VideoButton(
+                      icon: _isMute
+                          ? FontAwesomeIcons.volumeXmark
+                          : FontAwesomeIcons.volumeHigh,
+                      text: '',
+                    ),
+                  ),
+
+                // 프로필이미지
                 const CircleAvatar(
                   radius: 25, // 이미지 안올대 대체요소
                   backgroundColor: Colors.black, // 얼마나 클지

@@ -35,76 +35,111 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _onScaffoldTap(context),
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.size40,
-            ),
-            child: Column(
-              children: [
-                Gaps.v80,
-                const Text(
-                  'Sign up for TikTok',
-                  style: TextStyle(
-                    fontSize: Sizes.size24,
-                    fontWeight: FontWeight.w700,
-                  ),
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        // if (orientation == Orientation.landscape) {
+        //   return const Scaffold(
+        //     body: Center(
+        //       child: Text('Plz rotate ur phone.'),
+        //     ),
+        //   );
+        // }
+        return GestureDetector(
+          onTap: () => _onScaffoldTap(context),
+          child: Scaffold(
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Sizes.size40,
                 ),
-                Gaps.v20,
-                const Text(
-                  'Create a profile, follow other accounts, make your own videos, and more.',
-                  style: TextStyle(
-                    fontSize: Sizes.size16,
-                    color: Colors.black45,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Gaps.v40,
-
-                // buttons
-                AuthButton(
-                  icon: const FaIcon(FontAwesomeIcons.user),
-                  text: 'Use email & password',
-                  onTap: () => _onEmailTap(context),
-                ),
-                Gaps.v16,
-                const AuthButton(
-                  icon: FaIcon(FontAwesomeIcons.apple),
-                  text: 'Continue with Apple',
-                ),
-              ],
-            ),
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          elevation: 10,
-          shadowColor: Colors.black,
-          surfaceTintColor: Colors.grey.shade50,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Sizes.size28),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Already have an acount? '),
-                Gaps.v5,
-                GestureDetector(
-                  onTap: () => _onLoginTap(context),
-                  child: Text(
-                    'Log in',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w600,
+                child: Column(
+                  children: [
+                    Gaps.v80,
+                    const Text(
+                      'Sign up for TikTok',
+                      style: TextStyle(
+                        fontSize: Sizes.size24,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
+                    Gaps.v20,
+                    const Text(
+                      'Create a profile, follow other accounts, make your own videos, and more.',
+                      style: TextStyle(
+                        fontSize: Sizes.size16,
+                        color: Colors.black45,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Gaps.v40,
+
+                    // buttons
+                    // 세로방향
+                    if (orientation == Orientation.portrait) ...[
+                      AuthButton(
+                        icon: const FaIcon(FontAwesomeIcons.user),
+                        text: 'Use email & password',
+                        onTap: () => _onEmailTap(context),
+                      ),
+                      Gaps.v16,
+                      const AuthButton(
+                        icon: FaIcon(FontAwesomeIcons.apple),
+                        text: 'Continue with Apple',
+                      ),
+                    ],
+
+                    // 가로방향
+                    if (orientation == Orientation.landscape)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AuthButton(
+                              icon: const FaIcon(FontAwesomeIcons.user),
+                              text: 'Use email & password',
+                              onTap: () => _onEmailTap(context),
+                            ),
+                          ),
+                          Gaps.h16,
+                          const Expanded(
+                            child: AuthButton(
+                              icon: FaIcon(FontAwesomeIcons.apple),
+                              text: 'Continue with Apple',
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
-              ],
+              ),
+            ),
+            bottomNavigationBar: BottomAppBar(
+              elevation: 10,
+              shadowColor: Colors.black,
+              surfaceTintColor: Colors.grey.shade50,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: Sizes.size28),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Already have an acount? '),
+                    Gaps.v5,
+                    GestureDetector(
+                      onTap: () => _onLoginTap(context),
+                      child: Text(
+                        'Log in',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
