@@ -151,40 +151,37 @@ class _InterestsScreenState extends State<InterestsScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            bottom: Sizes.size40,
-            top: Sizes.size16,
-            left: Sizes.size24,
-            right: Sizes.size24,
-          ),
-          /*
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: Sizes.size20,
-              ),
-              child: Text(
-                'Next',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: Sizes.size16,
-                ),
-              ),
-            ),
-          ),
-          */
-          child: CupertinoButton(
-            onPressed: _onNextTap,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(
+          bottom: Sizes.size40,
+          top: Sizes.size16,
+          left: Sizes.size24,
+          right: Sizes.size24,
+        ),
+        /*
+        child: Container(
+          decoration: BoxDecoration(
             color: Theme.of(context).primaryColor,
-            child: const Text('Next'),
           ),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: Sizes.size20,
+            ),
+            child: Text(
+              'Next',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: Sizes.size16,
+              ),
+            ),
+          ),
+        ),
+        */
+        child: CupertinoButton(
+          onPressed: _onNextTap,
+          color: Theme.of(context).primaryColor,
+          child: const Text('Next'),
         ),
       ),
     );

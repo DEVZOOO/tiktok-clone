@@ -190,10 +190,15 @@ class _TutorialScreenState extends State<TutorialScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: isDartMode(context) ? Colors.black : Colors.white,
+        bottomNavigationBar: Container(
+          color: isDarkMode(context) ? Colors.black : Colors.white,
           child: Padding(
-            padding: const EdgeInsets.all(Sizes.size24),
+            padding: const EdgeInsets.only(
+              top: Sizes.size24,
+              left: Sizes.size24,
+              right: Sizes.size24,
+              bottom: Sizes.size44,
+            ),
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 300),
               opacity: _showingPage == Page.first ? 0 : 1,

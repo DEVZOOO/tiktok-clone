@@ -24,7 +24,7 @@ class FormButton extends StatelessWidget {
         decoration: BoxDecoration(
           // 입력필드값에 따라 변경
           color: disabled
-              ? isDartMode(context)
+              ? isDarkMode(context)
                   ? Colors.grey.shade800
                   : Colors.grey.shade300
               : Theme.of(context).primaryColor,

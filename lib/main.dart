@@ -35,6 +35,8 @@ class TikTokApp extends StatelessWidget {
       debugShowCheckedModeBanner: false, // 애뮬레이터 실행시 오른쪽위에 debug 표시 여부
       title: 'Tiktok clone',
       themeMode: ThemeMode.system, // ThemeMode.dart : 강제 dark모드 설정
+
+      // 라이트모드
       theme: ThemeData(
         brightness: Brightness.light,
         // 폰트, 색상만 지정함 기본폰트(사이즈, 두께 등등 없음)
@@ -85,6 +87,7 @@ class TikTokApp extends StatelessWidget {
           centerTitle: true,
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           elevation: 0,
           titleTextStyle: TextStyle(
             color: Colors.black,
@@ -92,25 +95,58 @@ class TikTokApp extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.grey.shade500,
+          indicatorColor: Colors.black,
+        ),
+        listTileTheme: const ListTileThemeData(
+          iconColor: Colors.black,
+        ),
         bottomAppBarTheme: BottomAppBarTheme(color: Colors.grey.shade50),
-        useMaterial3: false,
+        // useMaterial3: false,
       ),
+
+      // 다크모드
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.black,
         primaryColor: const Color(0xFFE9435A),
         textTheme: Typography.whiteMountainView,
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color(0xFFE9435A),
+        ),
         /*
         textTheme: GoogleFonts.wellfleetTextTheme(
           ThemeData(brightness: Brightness.dark).textTheme, // 다크모드 설정
         ),
         */
-        appBarTheme: AppBarTheme(color: Colors.grey.shade900),
+        appBarTheme: AppBarTheme(
+          centerTitle: true,
+          color: Colors.grey.shade900,
+          surfaceTintColor: Colors.grey.shade900,
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: Sizes.size16 + Sizes.size2,
+            fontWeight: FontWeight.w600,
+          ),
+          actionsIconTheme: IconThemeData(
+            color: Colors.grey.shade100,
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.grey.shade100,
+          ),
+        ),
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.white,
+          indicatorColor: Colors.white,
+          unselectedLabelColor: Colors.grey.shade700,
+        ),
         bottomAppBarTheme: BottomAppBarTheme(color: Colors.grey.shade900),
+        useMaterial3: false,
       ),
-      home: const SignUpScreen(),
-      // home: const MainNavigationScreen(),
+      // home: const SignUpScreen(),
+      home: const MainNavigationScreen(),
     );
   }
 }

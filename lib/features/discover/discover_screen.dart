@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/utils.dart';
 
 final tabs = [
   "Top",
@@ -93,10 +94,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             child: CupertinoTextField(
               controller: _textEditingController,
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: isDarkMode(context)
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(
                   Sizes.size8,
                 ),
+              ),
+              style: TextStyle(
+                color: isDarkMode(context) ? Colors.white : Colors.black,
               ),
 
               onChanged: _onSearchChanged,
@@ -131,13 +137,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           elevation: 1,
           bottom: TabBar(
             padding: const EdgeInsets.symmetric(horizontal: Sizes.size16),
-            labelColor: Colors.black,
             labelStyle: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: Sizes.size16,
             ),
-            unselectedLabelColor: Colors.grey.shade500,
-            indicatorColor: Colors.black,
             isScrollable: true,
             splashFactory: NoSplash.splashFactory, // 탭 클릭시 wave 효과 삭제
             tabs: [
@@ -195,6 +198,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       style: TextStyle(
                         fontSize: Sizes.size16,
                         fontWeight: FontWeight.bold,
+                        height: 1.1,
                       ),
                       maxLines: 2, // 최대 로우
                       overflow: TextOverflow.ellipsis, // 줄임표
@@ -206,7 +210,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         constraints.maxWidth > 250)
                       DefaultTextStyle(
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: isDarkMode(context)
+                              ? Colors.grey.shade300
+                              : Colors.grey.shade600,
                           fontWeight: FontWeight.w600,
                         ),
                         child: Row(
