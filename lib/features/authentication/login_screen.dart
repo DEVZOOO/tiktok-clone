@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/login_form_screen.dart';
@@ -7,11 +8,13 @@ import 'package:tiktok_clone/features/authentication/widget/auth_button.dart';
 import 'package:tiktok_clone/utils.dart';
 
 class LoginScreen extends StatelessWidget {
+  static String routeName = "/login";
   const LoginScreen({super.key});
 
   /// signup 링크 탭
   void _onSignupTap(BuildContext context) {
-    Navigator.of(context).pop(); // Navigator 가장 상단 화면 stack에서 제거
+    // Navigator.of(context).pop(); // Navigator 가장 상단 화면 stack에서 제거
+    context.pop();
   }
 
   /// 이메일 로그인 버튼 탭

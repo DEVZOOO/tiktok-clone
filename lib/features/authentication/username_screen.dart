@@ -6,6 +6,7 @@ import 'package:tiktok_clone/features/authentication/widget/form_button.dart';
 
 /// username 입력 화면
 class UsernameScreen extends StatefulWidget {
+  static String routeName = "/username";
   const UsernameScreen({super.key});
 
   @override
@@ -47,8 +48,18 @@ class _UsernameScreenState extends State<UsernameScreen> {
       return;
     }
 
+    /*
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const EmailScreen()),
+      MaterialPageRoute(
+        builder: (context) => const EmailScreen(),
+      ),
+    );
+    */
+
+    Navigator.pushNamed(
+      context,
+      EmailScreen.routeName,
+      arguments: EmailScreenArgs(username: _username), // 파라미터
     );
   }
 

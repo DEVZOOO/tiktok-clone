@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -11,6 +12,7 @@ import 'package:tiktok_clone/utils.dart';
 
 /// 회원가입 화면
 class SignUpScreen extends StatelessWidget {
+  static String routeName = "/";
   const SignUpScreen({super.key});
 
   /// 바깥 클릭시 포커싱 해제
@@ -19,26 +21,70 @@ class SignUpScreen extends StatelessWidget {
   }
 
   /// login 링크 탭
-  void _onLoginTap(BuildContext context) {
-    Navigator.of(context).push(
+  void _onLoginTap(BuildContext context) async {
+    /*
+    final result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const LoginScreen(),
       ),
     );
+    // print("user came back");
+    */
+
+    // final result = await Navigator.of(context).pushNamed(LoginScreen.routeName);
+
+    context.push(LoginScreen.routeName);
+    // 사용자를 다른 화면으로 보내주는데 screen stack 관련된 것 모두 무시
+    // 화면들이 stack 처럼 쌓여있는 형태로 동작하는데 stack에 push하는게 아니라 독립적인 화면으로 이동시킴
+    // pop을 사용할 수 없음!
+    // appBar에 뒤로가기 버튼 없어짐! 완전히 다른 화면으로 이동하고 싶을때, stack과의 관계를 끊고 새로 시작함
+    // context.go(LoginScreen.routeName);
   }
 
   /// 이메일 화면 이동
   void _onEmailTap(BuildContext context) {
+    /*
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const UsernameScreen(),
+      // MaterialPageRoute(builder: (context) => const UsernameScreen()),
+      PageRouteBuilder(
+        transitionDuration: const Duration(seconds: 1), // 다음화면으로 갈때 duration
+        reverseTransitionDuration:
+            const Duration(seconds: 1), // 이전화면으로 돌아올때 duration, 애니메이션 반대로 실행됨!
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const UsernameScreen(),
+        // child : pageBuilder가 리턴하는 위젯
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          // Animation<double> 이 아닌 다른 타입의 애니메이션 사용하고 싶을 경우
+          final offsetAnimation = Tween(
+            begin: const Offset(1, 0),
+            end: Offset.zero,
+          ).animate(animation);
+
+          final opacityAnimation = Tween(
+            begin: 0.5,
+            end: 1.0,
+          ).animate(animation);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: FadeTransition(
+              opacity: opacityAnimation,
+              child: child,
+            ),
+          );
+        },
       ),
     );
+    */
+
+    // Navigator.of(context).pushNamed(UsernameScreen.routeName);
+
+    context.push(UsernameScreen.routeName);
   }
 
   @override
   Widget build(BuildContext context) {
-    print(Localizations.localeOf(context));
+    // print(Localizations.localeOf(context));
     return OrientationBuilder(
       builder: (context, orientation) {
         // if (orientation == Orientation.landscape) {
@@ -60,7 +106,7 @@ class SignUpScreen extends StatelessWidget {
                   children: [
                     Gaps.v80,
                     Text(
-                      S.of(context).signUpTitle("TikTok"),
+                      S.of(context).signUpTitle("TikTok", DateTime.now()),
                       style: const TextStyle(
                         fontSize: Sizes.size24,
                         fontWeight: FontWeight.w700,
