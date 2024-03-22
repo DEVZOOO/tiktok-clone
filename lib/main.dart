@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/features/inbox/activity_screen.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 import 'package:tiktok_clone/features/main_navigation/main_navigation_screen.dart';
+import 'package:tiktok_clone/features/settings/settings_screen.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 
 void main() async {
   // 앱 실행전에 binding 초기화
@@ -31,10 +34,30 @@ class TikTokApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // S.load(const Locale("ko"));
     return MaterialApp(
       debugShowCheckedModeBanner: false, // 애뮬레이터 실행시 오른쪽위에 debug 표시 여부
       title: 'Tiktok clone',
       themeMode: ThemeMode.system, // ThemeMode.dart : 강제 dark모드 설정
+      localizationsDelegates: const [
+        // 번역 파일들
+        S.delegate,
+        // flutter 기본 위젯
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale("en"),
+        Locale("ko"),
+      ],
+
+      /*
+        AppLocalizations.delegate, // 생성한 번역파일
+
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      */
 
       // 라이트모드
       theme: ThemeData(
@@ -104,7 +127,7 @@ class TikTokApp extends StatelessWidget {
           iconColor: Colors.black,
         ),
         bottomAppBarTheme: BottomAppBarTheme(color: Colors.grey.shade50),
-        // useMaterial3: false,
+        useMaterial3: false,
       ),
 
       // 다크모드

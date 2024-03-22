@@ -19,7 +19,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 4; // test
+  int _selectedIndex = 0; // test
   bool _isLongTab = false;
 
   final screens = [
