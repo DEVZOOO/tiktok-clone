@@ -11,7 +11,14 @@ import 'package:tiktok_clone/features/users/widget/user_account.dart';
 
 /// user profile
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key});
+  final String username;
+  final String tab;
+
+  const UserProfileScreen({
+    super.key,
+    required this.username,
+    required this.tab,
+  });
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -36,6 +43,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       body: SafeArea(
         child: DefaultTabController(
           length: 2,
+          initialIndex: widget.tab == "likes" ? 1 : 0,
           child: NestedScrollView(
             // header
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -116,7 +124,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
               // title
               SliverAppBar(
-                title: const Text('Judy'),
+                title: Text(widget.username),
                 actions: [
                   IconButton(
                     onPressed: _onGearPressed,
@@ -140,7 +148,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       foregroundImage: const NetworkImage(
                           'https://avatars.githubusercontent.com/u/104175767?v=4'),
                       backgroundColor: Theme.of(context).primaryColor,
-                      child: const Text('Judy'),
+                      child: Text(widget.username),
                     ),
 
                     Gaps.v20,
@@ -149,9 +157,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          '@Judy',
-                          style: TextStyle(
+                        Text(
+                          '@${widget.username}',
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: Sizes.size18,
                           ),

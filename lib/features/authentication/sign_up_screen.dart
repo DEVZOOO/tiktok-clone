@@ -12,7 +12,8 @@ import 'package:tiktok_clone/utils.dart';
 
 /// 회원가입 화면
 class SignUpScreen extends StatelessWidget {
-  static String routeName = "/";
+  static String routeUrl = "/";
+  static const routeName = "signup";
   const SignUpScreen({super.key});
 
   /// 바깥 클릭시 포커싱 해제
@@ -43,6 +44,7 @@ class SignUpScreen extends StatelessWidget {
 
   /// 이메일 화면 이동
   void _onEmailTap(BuildContext context) {
+    // 페이지 애니메이션
     /*
     Navigator.of(context).push(
       // MaterialPageRoute(builder: (context) => const UsernameScreen()),
@@ -79,7 +81,9 @@ class SignUpScreen extends StatelessWidget {
 
     // Navigator.of(context).pushNamed(UsernameScreen.routeName);
 
-    context.push(UsernameScreen.routeName);
+    // context.push(UsernameScreen.routeName);
+    // context.push("/users/lynn?show=likes");
+    context.pushNamed(UsernameScreen.routeName);
   }
 
   @override
