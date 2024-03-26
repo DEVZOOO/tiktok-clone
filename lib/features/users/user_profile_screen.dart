@@ -181,7 +181,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Challenge 1
+                          // ## Challenge 1
                           const UserAccount(
                             number: '97',
                             title: 'Following',

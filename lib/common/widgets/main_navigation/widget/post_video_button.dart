@@ -64,7 +64,7 @@ class PostVideoButton extends StatelessWidget {
           child: Center(
             child: FaIcon(
               FontAwesomeIcons.plus,
-              color: !inverted || !isDark ? Colors.white : Colors.black,
+              color: inverted && !isDark ? Colors.white : Colors.black,
               size: 18,
             ),
           ),

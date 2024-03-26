@@ -6,6 +6,9 @@ import 'package:tiktok_clone/utils.dart';
 
 /// Inbox > activity
 class ActivityScreen extends StatefulWidget {
+  static const String routeUrl = "/activity";
+  static const String routeName = "activity";
+
   const ActivityScreen({super.key});
 
   @override

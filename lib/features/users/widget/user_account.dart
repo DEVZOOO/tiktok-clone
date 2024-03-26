@@ -3,7 +3,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 
 /// 사용자 팔로워 / 팔로잉 / 좋아요
-/// Challenge 1
+/// ## Challenge 1
 class UserAccount extends StatelessWidget {
   final String number;
   final String title;

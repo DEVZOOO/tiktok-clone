@@ -46,13 +46,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   /// 탭 메뉴 탭
-  /// challenge 1 - 탭 변경시 키보드 unfocus
+  /// ## challenge 1 - 탭 변경시 키보드 unfocus
   void _onTabChanged(int index) {
     FocusScope.of(context).unfocus();
   }
 
   /// clear 버튼 탭
-  /// challenge 2 - custom input 구현
+  /// ## challenge 2 - custom input 구현
   void _onClearTap() {
     _textEditingController.clear();
     setState(() {
@@ -88,7 +88,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             onSubmitted: _onSearchSubmitted,
           ),
           */
-          /// challenge 2 - custom input 구현
+          /// ## challenge 2 - custom input 구현
           title: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: Breakpoints.sm),
             child: CupertinoTextField(

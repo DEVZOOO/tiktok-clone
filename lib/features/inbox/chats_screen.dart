@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
 
 /// DM
 class ChatsScreen extends StatefulWidget {
+  static const String routeUrl = "/chats";
+  static const String routeName = "chats";
+
   const ChatsScreen({super.key});
 
   @override
@@ -50,12 +54,21 @@ class _ChatsScreenState extends State<ChatsScreen> {
   }
 
   /// 채팅 입장
-  void _onChatTap() {
+  void _onChatTap(int index) {
+    /*
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const ChatDetailScreen(),
       ),
+    );
+    */
+
+    context.pushNamed(
+      ChatDetailScreen.routeName,
+      params: {
+        "chatId": "$index",
+      },
     );
   }
 
@@ -88,7 +101,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
         ],
       ),
       subtitle: const Text('Don\'t forget to make video.'),
-      onTap: _onChatTap,
+      onTap: () => _onChatTap(index),
       onLongPress: () => _deleteItem(index),
     );
   }

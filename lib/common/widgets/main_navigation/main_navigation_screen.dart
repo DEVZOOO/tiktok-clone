@@ -1,25 +1,41 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/discover/discover_screen.dart';
 import 'package:tiktok_clone/features/inbox/inbox_screen.dart';
-import 'package:tiktok_clone/features/main_navigation/widget/nav_tab.dart';
-import 'package:tiktok_clone/features/main_navigation/widget/post_video_button.dart';
+import 'package:tiktok_clone/common/widgets/main_navigation/widget/nav_tab.dart';
+import 'package:tiktok_clone/common/widgets/main_navigation/widget/post_video_button.dart';
 import 'package:tiktok_clone/features/users/user_profile_screen.dart';
+import 'package:tiktok_clone/features/videos/video_recording_screen.dart';
 import 'package:tiktok_clone/features/videos/video_timeline_screen.dart';
 import 'package:tiktok_clone/utils.dart';
 
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
+  static const String routeName = "mainNavigation";
+
+  final String tab;
+
+  const MainNavigationScreen({
+    super.key,
+    required this.tab,
+  });
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 0; // test
+  final List<String> _tabs = [
+    "home",
+    "discover",
+    "video",
+    "inbox",
+    "profile",
+  ];
+
+  late int _selectedIndex = _tabs.indexOf(widget.tab);
   bool _isLongTab = false;
 
   final screens = [
@@ -40,6 +56,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   /// 탭 클릭
   void _onTap(int index) {
+    context.go("/${_tabs[index]}");
+
     setState(() {
       _selectedIndex = index;
     });
@@ -53,6 +71,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   /// 동영상 녹화 버튼 클릭
   void _onPostVideoTap() {
+    /*
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -64,6 +83,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         fullscreenDialog: true, // 가장 위에 표시
       ),
     );
+    */
+
+    context.pushNamed(VideoRecordingScreen.routeName);
   }
 
   @override

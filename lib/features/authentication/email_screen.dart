@@ -12,8 +12,8 @@ class EmailScreenArgs {
 
 /// 이메일 입력 화면
 class EmailScreen extends StatefulWidget {
-  static String routeUrl = "email";
-  static String routeName = "email";
+  // static String routeUrl = "email";
+  // static String routeName = "email";
   final String username;
 
   const EmailScreen({

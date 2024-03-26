@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/login_screen.dart';
 import 'package:tiktok_clone/features/authentication/username_screen.dart';
 import 'package:tiktok_clone/features/authentication/widget/auth_button.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
-import 'package:tiktok_clone/utils.dart';
 
 /// 회원가입 화면
 class SignUpScreen extends StatelessWidget {
@@ -34,7 +32,7 @@ class SignUpScreen extends StatelessWidget {
 
     // final result = await Navigator.of(context).pushNamed(LoginScreen.routeName);
 
-    context.push(LoginScreen.routeName);
+    context.pushNamed(LoginScreen.routeName);
     // 사용자를 다른 화면으로 보내주는데 screen stack 관련된 것 모두 무시
     // 화면들이 stack 처럼 쌓여있는 형태로 동작하는데 stack에 push하는게 아니라 독립적인 화면으로 이동시킴
     // pop을 사용할 수 없음!
@@ -83,7 +81,13 @@ class SignUpScreen extends StatelessWidget {
 
     // context.push(UsernameScreen.routeName);
     // context.push("/users/lynn?show=likes");
-    context.pushNamed(UsernameScreen.routeName);
+    // context.pushNamed(UsernameScreen.routeName);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const UsernameScreen(),
+      ),
+    );
   }
 
   @override

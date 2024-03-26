@@ -5,10 +5,11 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/login_form_screen.dart';
 import 'package:tiktok_clone/features/authentication/widget/auth_button.dart';
-import 'package:tiktok_clone/utils.dart';
 
 class LoginScreen extends StatelessWidget {
-  static String routeName = "/login";
+  static String routeName = "login";
+  static String routeUrl = "/login";
+
   const LoginScreen({super.key});
 
   /// signup 링크 탭
@@ -19,7 +20,16 @@ class LoginScreen extends StatelessWidget {
 
   /// 이메일 로그인 버튼 탭
   void _onEmailLoginTab(BuildContext context) {
+    /*
     Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const LoginFormScreen(),
+      ),
+    );
+    */
+
+    Navigator.push(
+      context,
       MaterialPageRoute(
         builder: (context) => const LoginFormScreen(),
       ),
@@ -76,7 +86,7 @@ class LoginScreen extends StatelessWidget {
         // elevation: 10,
         // shadowColor: Colors.black,
         // surfaceTintColor: Colors.grey.shade50,
-        color: isDarkMode(context) ? null : Colors.grey,
+        // color: isDarkMode(context) ? null : Colors.grey,
         child: Padding(
           padding: const EdgeInsets.only(
             top: Sizes.size28,

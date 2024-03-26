@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/widget/form_button.dart';
@@ -41,10 +42,13 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
 
   /// Next 버튼 클릭 이벤트
   void _onNextTap() {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const InterestsScreen()),
-      (route) => false,
-    );
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   MaterialPageRoute(builder: (context) => const InterestsScreen()),
+    //   (route) => false,
+    // );
+
+    // 뒤로가기 안댐
+    context.pushReplacementNamed(InterestsScreen.routeName);
   }
 
   @override

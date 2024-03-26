@@ -6,7 +6,15 @@ import 'package:tiktok_clone/constants/sizes.dart';
 
 /// 대화창
 class ChatDetailScreen extends StatefulWidget {
-  const ChatDetailScreen({super.key});
+  static const String routeUrl = ":chatId";
+  static const String routeName = "chartDetail";
+
+  final String chatId;
+
+  const ChatDetailScreen({
+    super.key,
+    required this.chatId,
+  });
 
   @override
   State<ChatDetailScreen> createState() => _ChatDetailScreenState();
@@ -39,7 +47,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       return;
     }
 
-    print(_textEditingController.text);
+    // print(_textEditingController.text);
     _textEditingController.clear(); // 입력값 삭제
 
     setState(() {
@@ -57,7 +65,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             contentPadding: EdgeInsets.zero,
             horizontalTitleGap: Sizes.size8,
 
-            // Challenge 1
+            // ## Challenge 1
             leading: Stack(
               children: [
                 const CircleAvatar(
@@ -84,9 +92,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 ),
               ],
             ),
-            title: const Text(
-              'Judy',
-              style: TextStyle(
+            title: Text(
+              'Judy (${widget.chatId})',
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -153,7 +161,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               itemCount: 10,
             ),
 
-            // challenge 2
+            // ## challenge 2
             Positioned(
               bottom: 0,
               width: MediaQuery.of(context).size.width,
