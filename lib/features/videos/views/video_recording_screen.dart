@@ -8,8 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/videos/video_preview_screen.dart';
-import 'package:tiktok_clone/features/videos/widgets/flash_icon.dart';
+import 'package:tiktok_clone/features/videos/views/video_preview_screen.dart';
+import 'package:tiktok_clone/features/videos/views/widgets/flash_icon.dart';
 
 /// 동영상 녹화 화면
 class VideoRecordingScreen extends StatefulWidget {
@@ -237,7 +237,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     }
 
     // 권한이 없어서 inactive라면 return
-    if (!_hasPermission) {
+    if (!_hasPermission || _deniedPermission) {
       // !_cameraController.value.isInitialzed
       return;
     }
@@ -260,8 +260,8 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     _buttonAnimationController.dispose();
     _progressAnimationController.dispose();
 
-    // 카메라 초기화한 경우만 dispose
-    if (!_noCamera) {
+    // 카메라 없거나 권한 거부했으면 dispose 제외
+    if (!_noCamera && !_deniedPermission) {
       _cameraController.dispose();
     }
 

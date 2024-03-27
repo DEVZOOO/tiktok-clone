@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:tiktok_clone/common/widgets/theme_configuration/is_darkmode.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
+import 'package:tiktok_clone/features/videos/view_models/playback_config_vm.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -34,9 +37,94 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: Breakpoints.sm),
+          constraints: const BoxConstraints(
+            maxWidth: Breakpoints.sm,
+          ),
           child: ListView(
             children: [
+              // ## Challenge 라이트모드/다크모드
+              SwitchListTile.adaptive(
+                value: isDarkMode.value,
+                onChanged: (value) => isDarkMode.value = !isDarkMode.value,
+                title: const Text("Use Dark Mode"),
+                subtitle: const Text("다크모드를 사용합니다."),
+              ),
+
+              // 음량조절
+              // 1) InheritedWidget + StatefulWidget
+              /*
+              SwitchListTile.adaptive(
+                value: VideoConfigData.of(context).autoMute,
+                onChanged: (value) => VideoConfigData.of(context).toggleMuted(),
+                title: const Text("Auto Mute"),
+                subtitle: const Text("Videos will be muted by default."),
+              ),
+              */
+              // 2) ChangeNotifier
+              /*
+              AnimatedBuilder(
+                animation: videoConfig,
+                builder: (context, child) => SwitchListTile.adaptive(
+                  value: videoConfig.autoMute,
+                  onChanged: (value) => videoConfig.toggleAutoMute(),
+                  title: const Text("Auto Mute"),
+                  subtitle: const Text("Videos will be muted by default."),
+                ),
+              ),
+              */
+              // 3) ValueNotifier
+              /*
+              AnimatedBuilder(
+                animation: videoConfig,
+                builder: (context, child) => SwitchListTile.adaptive(
+                  value: videoConfig.value,
+                  onChanged: (value) => videoConfig.value = !videoConfig.value,
+                  title: const Text("Auto Mute"),
+                  subtitle: const Text("Videos will be muted by default."),
+                ),
+              ),
+              // or
+              ValueListenableBuilder(
+                valueListenable: videoConfig,
+                builder: (context, value, child) {
+                  return SwitchListTile.adaptive(
+                    value: videoConfig.value,
+                    onChanged: (value) =>
+                        videoConfig.value = !videoConfig.value,
+                    title: const Text("Auto Mute"),
+                    subtitle: const Text("Videos will be muted by default."),
+                  );
+                },
+              ),
+              */
+              // 4) provider
+              /*
+              SwitchListTile.adaptive(
+                value: context.watch<VideoConfig>().isMuted,
+                onChanged: (value) =>
+                    context.read<VideoConfig>().toggleIsMuted(),
+                title: const Text("Auto Mute"),
+                subtitle: const Text("Videos will be muted by default."),
+              ),
+              */
+              // viewmodel
+              // 음소거
+              SwitchListTile.adaptive(
+                value: context.watch<PlaybackConfigViewModel>().muted,
+                onChanged: (value) =>
+                    context.read<PlaybackConfigViewModel>().setMuted(value),
+                title: const Text("Mute Video"),
+                subtitle: const Text("Videos will be muted by default."),
+              ),
+              // 자동재생
+              SwitchListTile.adaptive(
+                value: context.watch<PlaybackConfigViewModel>().autoplay,
+                onChanged: (value) =>
+                    context.read<PlaybackConfigViewModel>().setAutoplay(value),
+                title: const Text("Autoplay"),
+                subtitle: const Text("Video will start playing automatically."),
+              ),
+
               // alert
               ListTile(
                 title: const Text('Log out (IOS)'),

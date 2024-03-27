@@ -1,11 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/videos/widgets/video_button.dart';
-import 'package:tiktok_clone/features/videos/widgets/video_comments.dart';
+import 'package:tiktok_clone/features/videos/view_models/playback_config_vm.dart';
+import 'package:tiktok_clone/features/videos/views/widgets/video_button.dart';
+import 'package:tiktok_clone/features/videos/views/widgets/video_comments.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -38,8 +39,11 @@ class _VideoPostState extends State<VideoPost>
   // 영상 정보 펼치기 여부
   bool _seeAll = false;
 
-  /// 음소거 여부, web이면 true
+  /// 음소거 여부, web or 로컬데이터 true
   bool _isMute = kIsWeb;
+
+  // ChangeNotifier
+  // final bool _autoMute = videoConfig.value;
 
   /// 영상 변경 이벤트
   void _onVideoChange() {
@@ -85,7 +89,12 @@ class _VideoPostState extends State<VideoPost>
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
-      _videoPlayerController.play();
+      // ViewModel 데이터
+      final autoplay = context.read<PlaybackConfigViewModel>().autoplay;
+      if (autoplay) {
+        _videoPlayerController.play();
+      }
+      _playbackConfigChanged();
     }
 
     // 영상이 재생되고 있는데 전혀 보이지 않으면(화면에서 보이지 않으면)
@@ -166,6 +175,14 @@ class _VideoPostState extends State<VideoPost>
       duration: _animationDuration,
     );
 
+    /*
+    videoConfig.addListener(() {
+      setState(() {
+        _autoMute = videoConfig.value;
+      });
+    });
+    */
+
     // 1
     /*
     // 애니메이션값 변경할때 호출
@@ -173,6 +190,22 @@ class _VideoPostState extends State<VideoPost>
       setState(() {}); // build 호출, to call build method
     });
     */
+
+    // 음소거 여부
+    final playbackVm = context.read<PlaybackConfigViewModel>();
+    _isMute = _isMute || playbackVm.muted;
+    // ViewModel Listener 등록
+    playbackVm.addListener(_playbackConfigChanged);
+  }
+
+  /// ViewModel 음소거 여부에 따라 변경
+  void _playbackConfigChanged() {
+    if (!mounted) {
+      return;
+    }
+    final muted = context.read<PlaybackConfigViewModel>().muted;
+    // 음소거면 볼륨 0, 아니면 1
+    _videoPlayerController.setVolume(muted ? 0 : 1);
   }
 
   @override
@@ -184,6 +217,9 @@ class _VideoPostState extends State<VideoPost>
 
   @override
   Widget build(BuildContext context) {
+    // final videoConfig = context.dependOnInheritedWidgetOfExactType<VideoConfig>();
+    // print(videoConfig?.autoMute);
+
     return VisibilityDetector(
       key: Key('${widget.index}'),
       onVisibilityChanged: _onVisibilityChange,
@@ -246,6 +282,52 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
               ),
+            ),
+          ),
+
+          // 음소거 여부 아이콘
+          Positioned(
+            top: Sizes.size40,
+            left: Sizes.size20,
+            child: IconButton(
+              // 1) InheritedWidet + StatefulWidget
+              /*
+              icon: FaIcon(
+                VideoConfigData.of(context).autoMute
+                    ? FontAwesomeIcons.volumeOff
+                    : FontAwesomeIcons.volumeHigh,
+                color: Colors.white,
+              ),
+              onPressed: VideoConfigData.of(context).toggleMuted,
+              */
+              // 2) ChangeNotifier
+              /*
+              icon: FaIcon(
+                _autoMute
+                    ? FontAwesomeIcons.volumeOff
+                    : FontAwesomeIcons.volumeHigh,
+                color: Colors.white,
+              ),
+              onPressed: videoConfig.toggleAutoMute,
+              */
+              // 3) ValueNotifier
+
+              icon: FaIcon(
+                // context.watch<VideoConfig>().isMuted
+                _isMute
+                    ? FontAwesomeIcons.volumeOff
+                    : FontAwesomeIcons.volumeHigh,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                // videoConfig.value = !videoConfig.value;
+                // context.read<VideoConfig>().toggleIsMuted();
+
+                // context
+                // .read<PlaybackConfigViewModel>()
+                // .setMuted(!context.read<PlaybackConfigViewModel>().muted);
+                _toggleVolume();
+              },
             ),
           ),
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tiktok_clone/features/videos/widgets/video_post.dart';
+import 'package:tiktok_clone/features/videos/views/widgets/video_post.dart';
 
 /// 영상 목록(Home) 화면
 class VideoTimelineScreen extends StatefulWidget {

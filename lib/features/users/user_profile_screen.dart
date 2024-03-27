@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -216,6 +214,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // Follows
                         Flexible(
                           child: FractionallySizedBox(
                             widthFactor: .5,
@@ -256,7 +255,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             child: FaIcon(
                               FontAwesomeIcons.youtube,
                               size: Sizes.size20,
-                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -277,7 +275,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             child: FaIcon(
                               FontAwesomeIcons.sortDown,
                               size: Sizes.size20,
-                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -391,7 +388,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ],
                   ),
                 ),
-                const Text('two'),
+                const Center(child: Text('two')),
               ],
             ),
           ),

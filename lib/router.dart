@@ -7,22 +7,25 @@ import 'package:tiktok_clone/features/inbox/activity_screen.dart';
 import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox/chats_screen.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
-import 'package:tiktok_clone/features/videos/video_recording_screen.dart';
+import 'package:tiktok_clone/features/videos/views/video_recording_screen.dart';
 
 /// router
 final router = GoRouter(
-  initialLocation: "/home", // TEST
+  initialLocation: "/profile", // TEST
   routes: [
+    // signup
     GoRoute(
       path: SignUpScreen.routeUrl,
       name: SignUpScreen.routeName,
       builder: (context, state) => const SignUpScreen(),
     ),
+    // login
     GoRoute(
       path: LoginScreen.routeUrl,
       name: LoginScreen.routeName,
       builder: (context, state) => const LoginScreen(),
     ),
+    // interests
     GoRoute(
       path: InterestsScreen.routeUrl,
       name: InterestsScreen.routeName,
@@ -68,6 +71,7 @@ final router = GoRouter(
       name: ActivityScreen.routeName,
       builder: (context, state) => const ActivityScreen(),
     ),
+    // chats
     GoRoute(
       path: ChatsScreen.routeUrl,
       name: ChatsScreen.routeName,
