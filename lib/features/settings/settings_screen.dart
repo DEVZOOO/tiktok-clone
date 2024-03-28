@@ -1,20 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:tiktok_clone/common/widgets/theme_configuration/is_darkmode.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/features/videos/view_models/playback_config_vm.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerWidget {
+// class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
+  /*
   bool _notification = false;
 
   void _onNotificationChange(bool? newVal) {
@@ -26,9 +23,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _notification = !_notification;
     });
   }
-
+  */
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -110,17 +107,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // viewmodel
               // 음소거
               SwitchListTile.adaptive(
-                value: context.watch<PlaybackConfigViewModel>().muted,
-                onChanged: (value) =>
-                    context.read<PlaybackConfigViewModel>().setMuted(value),
+                // provider
+                // value: context.watch<PlaybackConfigViewModel>().muted,
+                value: ref.watch(playbackConfigProvider).muted,
+                onChanged: (value) {
+                  // context.read<PlaybackConfigViewModel>().setMuted(value);
+                  ref.read(playbackConfigProvider.notifier).setMuted(value);
+                },
                 title: const Text("Mute Video"),
                 subtitle: const Text("Videos will be muted by default."),
               ),
               // 자동재생
               SwitchListTile.adaptive(
-                value: context.watch<PlaybackConfigViewModel>().autoplay,
-                onChanged: (value) =>
-                    context.read<PlaybackConfigViewModel>().setAutoplay(value),
+                // value: context.watch<PlaybackConfigViewModel>().autoplay,
+                value: ref.watch(playbackConfigProvider).autoplay,
+                onChanged: (value) {
+                  // context.read<PlaybackConfigViewModel>().setAutoplay(value);
+                  ref.read(playbackConfigProvider.notifier).setAutoplay(value);
+                },
                 title: const Text("Autoplay"),
                 subtitle: const Text("Video will start playing automatically."),
               ),
@@ -209,39 +213,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
 
               //
+              /*
               Checkbox(
-                value: _notification,
-                onChanged: _onNotificationChange,
+                value: false,
+                onChanged: (value) {},
               ),
               Switch(
-                value: _notification,
-                onChanged: _onNotificationChange,
+                value: false,
+                onChanged: (value) {},
               ),
               Switch.adaptive(
-                value: _notification,
-                onChanged: _onNotificationChange,
+                value: false,
+                onChanged: (value) {},
               ),
               CupertinoSwitch(
-                value: _notification,
-                onChanged: _onNotificationChange,
+                value: false,
+                onChanged: (value) {},
               ),
               SwitchListTile(
-                value: _notification,
-                onChanged: _onNotificationChange,
+                value: false,
+                onChanged: (value) {},
                 title: const Text('SwitchListTile'),
               ),
               SwitchListTile.adaptive(
-                value: _notification,
-                onChanged: _onNotificationChange,
+                value: false,
+                onChanged: (value) {},
                 title: const Text('SwitchListTile'),
                 subtitle: const Text('adaptive'),
               ),
               CheckboxListTile(
-                value: _notification,
-                onChanged: _onNotificationChange,
+                value: false,
+                onChanged: (value) {},
                 title: const Text('CheckboxListTile'),
                 activeColor: Theme.of(context).primaryColor,
               ),
+              */
               ListTile(
                 onTap: () => showAboutDialog(
                   context: context,
@@ -271,8 +277,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     print(date);
                   }
 
-                  if (!mounted) return;
-
                   final time = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.now(),
@@ -281,7 +285,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     print(time);
                   }
 
-                  if (!mounted) return;
                   final booking = await showDateRangePicker(
                     context: context,
                     // modal에 wrapper 만들어줌

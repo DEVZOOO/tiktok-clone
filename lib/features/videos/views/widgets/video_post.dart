@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -12,7 +13,7 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 /// 영상 위젯
-class VideoPost extends StatefulWidget {
+class VideoPost extends ConsumerStatefulWidget {
   final Function onVideoFinished;
   final int index;
 
@@ -23,10 +24,10 @@ class VideoPost extends StatefulWidget {
   });
 
   @override
-  State<VideoPost> createState() => _VideoPostState();
+  VideoPostState createState() => VideoPostState();
 }
 
-class _VideoPostState extends State<VideoPost>
+class VideoPostState extends ConsumerState<VideoPost>
     with SingleTickerProviderStateMixin {
   final VideoPlayerController _videoPlayerController =
       VideoPlayerController.asset('assets/videos/video.mp4'); // 리소스 경로
@@ -90,7 +91,12 @@ class _VideoPostState extends State<VideoPost>
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
       // ViewModel 데이터
+      /*
       final autoplay = context.read<PlaybackConfigViewModel>().autoplay;
+      */
+      // Riverpod
+      final autoplay = ref.read(playbackConfigProvider).autoplay;
+
       if (autoplay) {
         _videoPlayerController.play();
       }
@@ -192,10 +198,12 @@ class _VideoPostState extends State<VideoPost>
     */
 
     // 음소거 여부
+    /*
     final playbackVm = context.read<PlaybackConfigViewModel>();
     _isMute = _isMute || playbackVm.muted;
     // ViewModel Listener 등록
     playbackVm.addListener(_playbackConfigChanged);
+    */
   }
 
   /// ViewModel 음소거 여부에 따라 변경
@@ -203,7 +211,8 @@ class _VideoPostState extends State<VideoPost>
     if (!mounted) {
       return;
     }
-    final muted = context.read<PlaybackConfigViewModel>().muted;
+    // final muted = context.read<PlaybackConfigViewModel>().muted;
+    final muted = ref.read(playbackConfigProvider).muted;
     // 음소거면 볼륨 0, 아니면 1
     _videoPlayerController.setVolume(muted ? 0 : 1);
   }

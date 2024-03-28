@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiktok_clone/features/videos/view_models/timeline_view_model.dart';
 import 'package:tiktok_clone/features/videos/views/widgets/video_post.dart';
 
 /// 영상 목록(Home) 화면
-class VideoTimelineScreen extends StatefulWidget {
+class VideoTimelineScreen extends ConsumerStatefulWidget {
   const VideoTimelineScreen({super.key});
 
   @override
-  State<VideoTimelineScreen> createState() => _VideoTimelineScreenState();
+  VideoTimelineScreenState createState() => VideoTimelineScreenState();
 }
 
-class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
+class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
   int _itemCount = 4;
 
   final PageController _pageController = PageController();
@@ -55,6 +57,47 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 상태값에 따라 다른 거 리턴
+    return ref.watch(timelineProvider).when(
+          // 로딩중
+          loading: () => const Center(child: CircularProgressIndicator()),
+          // 에러
+          error: (error, stackTrace) => Center(
+            child: Text(
+              "Could not load videos: $error",
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          // 성공
+          data: (videos) => RefreshIndicator(
+            // async of Future
+            onRefresh: _onRefresh,
+            displacement: 50, // indicator 위치 설정
+            edgeOffset: 30, // indicator 시작 위치
+            // color: Colors.white, // 선 색상
+            color: Theme.of(context).primaryColor,
+            // backgroundColor: Theme.of(context).primaryColor,
+            strokeWidth: 4, // 선 굵기
+            child: PageView.builder(
+              controller: _pageController,
+              // dynamic render
+              itemCount: videos.length,
+              itemBuilder: (context, index) {
+                return VideoPost(
+                  onVideoFinished: _onVideoFinished,
+                  index: index,
+                );
+              },
+              // pageSnapping: false, // false : 화면이 사용자가 스크롤한 그 위치에 멈춤
+              scrollDirection: Axis.vertical,
+              onPageChanged: _onPageChange,
+            ),
+          ),
+        );
+
+    /*
     return RefreshIndicator(
       // async of Future
       onRefresh: _onRefresh,
@@ -79,5 +122,6 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
         onPageChanged: _onPageChange,
       ),
     );
+    */
   }
 }
