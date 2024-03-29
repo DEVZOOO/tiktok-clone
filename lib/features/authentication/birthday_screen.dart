@@ -1,20 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/features/authentication/widget/form_button.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 
 /// 생일 입력 화면
-class BirthdayScreen extends StatefulWidget {
+class BirthdayScreen extends ConsumerStatefulWidget {
   const BirthdayScreen({super.key});
 
   @override
-  State<BirthdayScreen> createState() => _BirthdayScreenState();
+  ConsumerState<BirthdayScreen> createState() => _BirthdayScreenState();
 }
 
-class _BirthdayScreenState extends State<BirthdayScreen> {
+class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   final TextEditingController _birthdayController = TextEditingController();
 
   DateTime initialDate =
@@ -48,7 +50,11 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
     // );
 
     // 뒤로가기 안댐
-    context.pushReplacementNamed(InterestsScreen.routeName);
+    // context.pushReplacementNamed(InterestsScreen.routeName);
+
+    // create account
+    // print(ref.read(signupForm));
+    ref.read(signupProvider.notifier).signup(context);
   }
 
   @override
@@ -107,7 +113,10 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
             // button
             GestureDetector(
               onTap: _onNextTap,
-              child: const FormButton(text: 'Next', disabled: false),
+              child: FormButton(
+                text: 'Next',
+                disabled: ref.watch(signupProvider).isLoading,
+              ),
             ),
           ],
         ),

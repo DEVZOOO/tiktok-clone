@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,12 +9,17 @@ import 'package:tiktok_clone/common/widgets/theme_configuration/is_darkmode.dart
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/videos/repos/video_playback_config_repo.dart';
 import 'package:tiktok_clone/features/videos/view_models/playback_config_vm.dart';
+import 'package:tiktok_clone/firebase_options.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/router.dart';
 
 void main() async {
   // 앱 실행전에 binding 초기화
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // 방향 강제
   await SystemChrome.setPreferredOrientations(
@@ -44,16 +50,17 @@ void main() async {
   );
 }
 
-class TikTokApp extends StatelessWidget {
+class TikTokApp extends ConsumerWidget {
   const TikTokApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // S.load(const Locale("ko"));
     return ValueListenableBuilder(
       valueListenable: isDarkMode,
       builder: (context, value, child) => MaterialApp.router(
-        routerConfig: router,
+        // routerConfig: router,
+        routerConfig: ref.watch(routerProvider),
         debugShowCheckedModeBanner: false, // 애뮬레이터 실행시 오른쪽위에 debug 표시 여부
         title: 'Tiktok clone',
         // themeMode: ThemeMode.system, // ThemeMode.dart : 강제 dark모드 설정

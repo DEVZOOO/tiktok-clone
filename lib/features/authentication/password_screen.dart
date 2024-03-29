@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/birthday_screen.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/features/authentication/widget/form_button.dart';
 
 /*
@@ -33,14 +35,14 @@ class PasswordScreen extends StatelessWidget {
 */
 
 /// 이메일 입력 화면
-class PasswordScreen extends StatefulWidget {
+class PasswordScreen extends ConsumerStatefulWidget {
   const PasswordScreen({super.key});
 
   @override
-  State<PasswordScreen> createState() => _PasswordScreenState();
+  ConsumerState<PasswordScreen> createState() => _PasswordScreenState();
 }
 
-class _PasswordScreenState extends State<PasswordScreen> {
+class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   String _password = ''; // 비밀번호 값
@@ -92,6 +94,12 @@ class _PasswordScreenState extends State<PasswordScreen> {
     if (!_isPasswordValid()) {
       return;
     }
+
+    final state = ref.read(signupForm.notifier).state;
+    ref.read(signupForm.notifier).state = {
+      ...state,
+      "password": _password,
+    };
 
     // 페이지 이동
     Navigator.push(

@@ -52,8 +52,7 @@ class S {
 
   /// `Sign up for {nameOfTheApp} {when}`
   String signUpTitle(String nameOfTheApp, DateTime when) {
-    final DateFormat whenDateFormat =
-        DateFormat('yQQQQ / LLLL', Intl.getCurrentLocale());
+    final DateFormat whenDateFormat = DateFormat.yMd(Intl.getCurrentLocale());
     final String whenString = whenDateFormat.format(when);
 
     return Intl.message(
