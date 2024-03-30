@@ -33,6 +33,12 @@ class AuthenticationRepository {
 
   /// 유저 인증상태 변경
   Stream<User?> authStateChanges() => _firebaseAuth.authStateChanges();
+
+  /// github 로그인
+  Future<void> githubSignIn() async {
+    // firebase에서 지원하는 provider
+    await _firebaseAuth.signInWithProvider(GithubAuthProvider());
+  }
 }
 
 final authRepo = Provider((ref) => AuthenticationRepository());
