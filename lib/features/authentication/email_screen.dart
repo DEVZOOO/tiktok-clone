@@ -80,7 +80,10 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
     }
 
     // 값 저장
-    ref.read(signupForm.notifier).state = {"email": _email};
+    ref.read(signupForm.notifier).state = {
+      "email": _email,
+      "name": widget.username,
+    };
 
     // 페이지 이동
     Navigator.push(

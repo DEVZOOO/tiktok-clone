@@ -54,6 +54,15 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
 
     // create account
     // print(ref.read(signupForm));
+
+    // ## Challenge
+    final birthday = _birthdayController.text;
+    final state = ref.read(signupForm.notifier).state;
+    ref.read(signupForm.notifier).state = {
+      ...state,
+      "birthday": birthday,
+    };
+
     ref.read(signupProvider.notifier).signup(context);
   }
 

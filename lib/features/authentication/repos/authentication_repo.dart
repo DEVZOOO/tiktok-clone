@@ -11,8 +11,9 @@ class AuthenticationRepository {
   bool get isLoggedIn => user != null;
 
   /// 회원가입 - 이메일, 비번으로 계정 생성
-  Future<void> signUp(String email, String password) {
-    return _firebaseAuth.createUserWithEmailAndPassword(
+  Future<UserCredential> emailSignUp(String email, String password) async {
+    // 가입 성공시 firebaseAuth에서 반환받은 데이터에 접근하여 UserProfile 생성해야 하므로 return 처리
+    return await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
