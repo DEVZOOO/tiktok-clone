@@ -5,7 +5,7 @@ import 'package:tiktok_clone/features/videos/models/video_model.dart';
 
 class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
   List<VideoModel> _list = [
-    VideoModel(title: "First Video"),
+    // VideoModel(title: "First Video"),
   ];
 
   void uploadVideo() async {
@@ -13,10 +13,10 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
 
     await Future.delayed(const Duration(seconds: 2));
 
-    final newVideo = VideoModel(title: "${DateTime.now()}");
+    // final newVideo = VideoModel(title: "${DateTime.now()}");
     _list = [
       ..._list,
-      newVideo,
+      // newVideo,
     ];
 
     state = AsyncValue.data(_list); // AsyncNotifier라서 asyncvalue로 해야함

@@ -98,8 +98,10 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     // await _cameraController.prepareForVideoRecording(); // iOS : 녹화 준비
 
     // ## Challenge
-    _maxZoomLevel = await _cameraController.getMaxZoomLevel();
-    _minZoomLevel = await _cameraController.getMinZoomLevel();
+    if (_cameraController.value.isInitialized) {
+      _maxZoomLevel = await _cameraController.getMaxZoomLevel();
+      _minZoomLevel = await _cameraController.getMinZoomLevel();
+    }
 
     _flashMode = _cameraController.value.flashMode; // 카메라가 가진 값으로 초기화함
 
@@ -270,10 +272,12 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.black,
       body: SizedBox(
-        width: MediaQuery.of(context).size.width,
+        width: size.width,
+        height: size.height,
         child: !_hasPermission
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -297,7 +301,9 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
                 children: [
                   // 카메라 있고 controller 초기화됬으면
                   if (!_noCamera && _cameraController.value.isInitialized)
-                    CameraPreview(_cameraController),
+                    Positioned.fill(
+                      child: CameraPreview(_cameraController),
+                    ),
 
                   // 닫기
                   const Positioned(
