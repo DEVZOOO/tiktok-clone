@@ -12,7 +12,7 @@ class VideoTimelineScreen extends ConsumerStatefulWidget {
 }
 
 class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
-  int _itemCount = 4;
+  int _itemCount = 0;
 
   final PageController _pageController = PageController();
 
@@ -28,9 +28,8 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
     );
 
     if (page == _itemCount - 1) {
-      // 페이지 추가 - 무한스크롤링
-      _itemCount += 4;
-      setState(() {});
+      // 무한스크롤링
+      ref.watch(timelineProvider.notifier).fetchNextPage();
     }
   }
 
@@ -45,8 +44,11 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
     );
   }
 
+  /// 새로고침
   Future<void> _onRefresh() {
-    return Future.delayed(const Duration(seconds: 5));
+    // return Future.delayed(const Duration(seconds: 5));
+    // 꼭 return해야ㅕ 함
+    return ref.watch(timelineProvider.notifier).refresh();
   }
 
   @override
@@ -71,30 +73,35 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
             ),
           ),
           // 성공
-          data: (videos) => RefreshIndicator(
-            // async of Future
-            onRefresh: _onRefresh,
-            displacement: 50, // indicator 위치 설정
-            edgeOffset: 30, // indicator 시작 위치
-            // color: Colors.white, // 선 색상
-            color: Theme.of(context).primaryColor,
-            // backgroundColor: Theme.of(context).primaryColor,
-            strokeWidth: 4, // 선 굵기
-            child: PageView.builder(
-              controller: _pageController,
-              // dynamic render
-              itemCount: videos.length,
-              itemBuilder: (context, index) {
-                return VideoPost(
-                  onVideoFinished: _onVideoFinished,
-                  index: index,
-                );
-              },
-              // pageSnapping: false, // false : 화면이 사용자가 스크롤한 그 위치에 멈춤
-              scrollDirection: Axis.vertical,
-              onPageChanged: _onPageChange,
-            ),
-          ),
+          data: (videos) {
+            _itemCount = videos.length;
+            return RefreshIndicator(
+              // async of Future
+              onRefresh: _onRefresh,
+              displacement: 50, // indicator 위치 설정
+              edgeOffset: 30, // indicator 시작 위치
+              // color: Colors.white, // 선 색상
+              color: Theme.of(context).primaryColor,
+              // backgroundColor: Theme.of(context).primaryColor,
+              strokeWidth: 4, // 선 굵기
+              child: PageView.builder(
+                controller: _pageController,
+                // dynamic render
+                itemCount: videos.length,
+                itemBuilder: (context, index) {
+                  final videoData = videos[index];
+                  return VideoPost(
+                    onVideoFinished: _onVideoFinished,
+                    index: index,
+                    videoData: videoData,
+                  );
+                },
+                // pageSnapping: false, // false : 화면이 사용자가 스크롤한 그 위치에 멈춤
+                scrollDirection: Axis.vertical,
+                onPageChanged: _onPageChange,
+              ),
+            );
+          },
         );
 
     /*

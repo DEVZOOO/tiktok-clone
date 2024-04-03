@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/videos/models/video_model.dart';
 import 'package:tiktok_clone/features/videos/view_models/playback_config_vm.dart';
+import 'package:tiktok_clone/features/videos/view_models/video_post_view_model.dart';
 import 'package:tiktok_clone/features/videos/views/widgets/video_button.dart';
 import 'package:tiktok_clone/features/videos/views/widgets/video_comments.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
@@ -16,11 +17,13 @@ import 'package:visibility_detector/visibility_detector.dart';
 class VideoPost extends ConsumerStatefulWidget {
   final Function onVideoFinished;
   final int index;
+  final VideoModel videoData;
 
   const VideoPost({
     super.key,
     required this.onVideoFinished,
     required this.index,
+    required this.videoData,
   });
 
   @override
@@ -29,8 +32,9 @@ class VideoPost extends ConsumerStatefulWidget {
 
 class VideoPostState extends ConsumerState<VideoPost>
     with SingleTickerProviderStateMixin {
-  final VideoPlayerController _videoPlayerController =
-      VideoPlayerController.asset('assets/videos/video.mp4'); // 리소스 경로
+  // final VideoPlayerController _videoPlayerController = VideoPlayerController.asset('assets/videos/video.mp4'); // 리소스 경로
+  late final VideoPlayerController _videoPlayerController =
+      VideoPlayerController.network(widget.videoData.fileUrl); // 리소스 경로
 
   late AnimationController _animationController;
 
@@ -129,6 +133,11 @@ class VideoPostState extends ConsumerState<VideoPost>
     setState(() {
       _seeAll = !_seeAll;
     });
+  }
+
+  /// 좋아요 클릭
+  void _onLikeTap() {
+    ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
   }
 
   /// 댓글 버튼 클릭
@@ -239,7 +248,10 @@ class VideoPostState extends ConsumerState<VideoPost>
             // 화면 전체 채우기
             child: _videoPlayerController.value.isInitialized
                 ? VideoPlayer(_videoPlayerController)
-                : Container(color: Colors.black),
+                : Image.network(
+                    widget.videoData.thumbnailUrl,
+                    fit: BoxFit.cover, // 화면 꽉차게
+                  ),
           ),
 
           // 클릭
@@ -349,9 +361,9 @@ class VideoPostState extends ConsumerState<VideoPost>
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '@judy',
-                  style: TextStyle(
+                Text(
+                  '@${widget.videoData.creator}',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: Sizes.size20,
@@ -367,7 +379,7 @@ class VideoPostState extends ConsumerState<VideoPost>
                   children: [
                     Expanded(
                       child: Text(
-                        'This is my house in Thailand! blah blah blah blah blah blah blah blah blah blah blah blah blah blah !!!!',
+                        widget.videoData.description,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: Sizes.size16,
@@ -416,25 +428,28 @@ class VideoPostState extends ConsumerState<VideoPost>
                   ),
 
                 // 프로필이미지
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 25, // 이미지 안올대 대체요소
                   backgroundColor: Colors.black, // 얼마나 클지
                   foregroundColor: Colors.white,
                   foregroundImage: NetworkImage(
-                      'https://avatars.githubusercontent.com/u/104175767?v=4'),
-                  child: Text('judy'),
+                      'https://firebasestorage.googleapis.com/v0/b/judy-tiktok-clone.appspot.com/o/avatars%2F${widget.videoData.creatorUid}?alt=media&token=029a2805-8f99-445e-ae0d-c93c02ad9ab5}'),
+                  child: Text(widget.videoData.creator),
                 ),
                 Gaps.v24,
-                VideoButton(
-                  icon: FontAwesomeIcons.solidHeart,
-                  text: S.of(context).likeCount(3454345),
+                GestureDetector(
+                  onTap: _onLikeTap,
+                  child: VideoButton(
+                    icon: FontAwesomeIcons.solidHeart,
+                    text: S.of(context).likeCount(widget.videoData.likes),
+                  ),
                 ),
                 Gaps.v24,
                 GestureDetector(
                   onTap: () => _onCommentsTap(context),
                   child: VideoButton(
                     icon: FontAwesomeIcons.solidComment,
-                    text: S.of(context).commentCount(1232123),
+                    text: S.of(context).commentCount(widget.videoData.comments),
                   ),
                 ),
                 Gaps.v24,
