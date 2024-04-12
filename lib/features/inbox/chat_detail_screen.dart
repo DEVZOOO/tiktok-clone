@@ -1,26 +1,30 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/repos/authentication_repo.dart';
+import 'package:tiktok_clone/features/inbox/view_models/messages_view_model.dart';
 
 /// 대화창
-class ChatDetailScreen extends StatefulWidget {
+class ChatDetailScreen extends ConsumerStatefulWidget {
   static const String routeUrl = ":chatId";
   static const String routeName = "chartDetail";
 
   final String chatId;
+  final String userName;
 
   const ChatDetailScreen({
     super.key,
     required this.chatId,
+    required this.userName,
   });
 
   @override
-  State<ChatDetailScreen> createState() => _ChatDetailScreenState();
+  ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
 }
 
-class _ChatDetailScreenState extends State<ChatDetailScreen> {
+class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final TextEditingController _textEditingController = TextEditingController();
   bool _isWriting = false;
 
@@ -47,7 +51,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       return;
     }
 
-    // print(_textEditingController.text);
+    final text = _textEditingController.text;
+    if (text != "") {
+      ref.read(messageProvider.notifier).sendMessages(text);
+    }
+
     _textEditingController.clear(); // 입력값 삭제
 
     setState(() {
@@ -57,6 +65,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(messageProvider).isLoading;
     return GestureDetector(
       onTap: _unfocusAll,
       child: Scaffold(
@@ -119,47 +128,64 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         ),
         body: Stack(
           children: [
-            ListView.separated(
-              padding: const EdgeInsets.symmetric(
-                vertical: Sizes.size20,
-                horizontal: Sizes.size14,
-              ),
-              itemBuilder: (context, index) {
-                final isMine = index % 2 == 0;
-                return Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment:
-                      isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(Sizes.size14),
-                      decoration: BoxDecoration(
-                        color: isMine
-                            ? Colors.blue
-                            : Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(Sizes.size20),
-                          topRight: const Radius.circular(Sizes.size20),
-                          bottomLeft: Radius.circular(
-                              isMine ? Sizes.size20 : Sizes.size5),
-                          bottomRight: Radius.circular(
-                              isMine ? Sizes.size5 : Sizes.size20),
-                        ),
+            ref.watch(chatProvider(widget.chatId)).when(
+                  data: (data) {
+                    return ListView.separated(
+                      reverse: true, // 아래에서부터 보여지기
+                      padding: EdgeInsets.only(
+                        top: Sizes.size20,
+                        bottom: MediaQuery.of(context).padding.bottom +
+                            Sizes.size96,
+                        left: Sizes.size14,
+                        right: Sizes.size14,
                       ),
-                      child: const Text(
-                        'This is a messag!',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: Sizes.size16,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-              separatorBuilder: (context, index) => Gaps.v10,
-              itemCount: 10,
-            ),
+                      separatorBuilder: (context, index) => Gaps.v10,
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final msg = data[index];
+                        final isMine =
+                            msg.userId == ref.watch(authRepo).user!.uid;
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: isMine
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(Sizes.size14),
+                              decoration: BoxDecoration(
+                                color: isMine
+                                    ? Colors.blue
+                                    : Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(Sizes.size20),
+                                  topRight: const Radius.circular(Sizes.size20),
+                                  bottomLeft: Radius.circular(
+                                      isMine ? Sizes.size20 : Sizes.size5),
+                                  bottomRight: Radius.circular(
+                                      isMine ? Sizes.size5 : Sizes.size20),
+                                ),
+                              ),
+                              child: Text(
+                                msg.text,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: Sizes.size16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  error: (error, stackTrace) => Center(
+                    child: Text(error.toString()),
+                  ),
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
 
             // ## challenge 2
             Positioned(
@@ -218,7 +244,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       Gaps.h10,
                       // send icon
                       GestureDetector(
-                        onTap: _onSendTap,
+                        onTap: isLoading ? null : _onSendTap, // 로딩중에 실행하지 않음
                         child: Container(
                           padding: const EdgeInsets.all(Sizes.size8),
                           decoration: BoxDecoration(
@@ -227,8 +253,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                 : Colors.grey.shade300,
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          child: const FaIcon(
-                            FontAwesomeIcons.solidPaperPlane,
+                          child: FaIcon(
+                            isLoading
+                                ? FontAwesomeIcons.hourglass
+                                : FontAwesomeIcons.solidPaperPlane,
                             size: Sizes.size18,
                             color: Colors.white,
                           ),

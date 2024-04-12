@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
@@ -42,7 +43,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   void _onSearchSubmitted(String value) {
-    print('_onSearchSubmitted $value');
+    if (kDebugMode) {
+      print('_onSearchSubmitted $value');
+    }
   }
 
   /// 탭 메뉴 탭

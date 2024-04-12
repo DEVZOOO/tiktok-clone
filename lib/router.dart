@@ -15,7 +15,7 @@ import 'package:tiktok_clone/features/videos/views/video_recording_screen.dart';
 final routerProvider = Provider((ref) {
   // ref.watch(authState); // stream 변화되면 dependency에 의해 리빌드되서 redirect됨
   return GoRouter(
-    initialLocation: "/home", // TEST
+    initialLocation: "/inbox", // TEST
     redirect: (context, state) {
       final isLoggedIn = ref.read(authRepo).isLoggedIn;
       if (!isLoggedIn) {
@@ -97,8 +97,10 @@ final routerProvider = Provider((ref) {
             name: ChatDetailScreen.routeName,
             builder: (context, state) {
               final chatId = state.params['chatId']!;
+              final userName = state.params['userName']!;
               return ChatDetailScreen(
                 chatId: chatId,
+                userName: userName,
               );
             },
           ),

@@ -47,6 +47,9 @@ class VideoPostState extends ConsumerState<VideoPost>
   /// 음소거 여부, web or 로컬데이터 true
   bool _isMute = kIsWeb;
 
+  bool _isLiked = false;
+  late int _likeCnt = widget.videoData.likes;
+
   // ChangeNotifier
   // final bool _autoMute = videoConfig.value;
 
@@ -83,6 +86,13 @@ class VideoPostState extends ConsumerState<VideoPost>
 
     // 이벤트리스너 등록
     _videoPlayerController.addListener(_onVideoChange);
+  }
+
+  /// 좋아요 상태
+  void _initLiked() async {
+    _isLiked = await ref
+        .read(videoPostProvider(widget.videoData.id).notifier)
+        .isLiked();
   }
 
   /// 화면에 표시되는 정도 변경 이벤트
@@ -136,8 +146,15 @@ class VideoPostState extends ConsumerState<VideoPost>
   }
 
   /// 좋아요 클릭
-  void _onLikeTap() {
-    ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
+  void _onLikeTap() async {
+    await ref
+        .read(videoPostProvider(widget.videoData.id).notifier)
+        .toggleLikeVideo();
+    setState(() {
+      // 좋아요 상태였따면 취소, 아니면 좋아요
+      _isLiked ? _likeCnt -= 1 : _likeCnt += 1;
+      _isLiked = !_isLiked;
+    });
   }
 
   /// 댓글 버튼 클릭
@@ -190,6 +207,8 @@ class VideoPostState extends ConsumerState<VideoPost>
       duration: _animationDuration,
     );
 
+    _initLiked();
+
     /*
     videoConfig.addListener(() {
       setState(() {
@@ -237,6 +256,10 @@ class VideoPostState extends ConsumerState<VideoPost>
   Widget build(BuildContext context) {
     // final videoConfig = context.dependOnInheritedWidgetOfExactType<VideoConfig>();
     // print(videoConfig?.autoMute);
+
+    if (kDebugMode) {
+      print(_isLiked);
+    }
 
     return VisibilityDetector(
       key: Key('${widget.index}'),
@@ -441,7 +464,8 @@ class VideoPostState extends ConsumerState<VideoPost>
                   onTap: _onLikeTap,
                   child: VideoButton(
                     icon: FontAwesomeIcons.solidHeart,
-                    text: S.of(context).likeCount(widget.videoData.likes),
+                    text: S.of(context).likeCount(_likeCnt),
+                    isLiked: _isLiked,
                   ),
                 ),
                 Gaps.v24,

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,6 +26,11 @@ class UserProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
+  final TextEditingController _bioTextEditingController =
+      TextEditingController();
+  final TextEditingController _linkTextEditingController =
+      TextEditingController();
+
   /// setting
   void _onGearPressed() {
     Navigator.of(context).push(
@@ -47,16 +51,17 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
           loading: () => const Center(
             child: CircularProgressIndicator.adaptive(),
           ),
-          data: (data) => Scaffold(
-            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-            body: SafeArea(
-              child: DefaultTabController(
-                length: 2,
-                initialIndex: widget.tab == "likes" ? 1 : 0,
-                child: NestedScrollView(
-                  // header
-                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                    /*
+          data: (data) {
+            return Scaffold(
+              backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+              body: SafeArea(
+                child: DefaultTabController(
+                  length: 2,
+                  initialIndex: widget.tab == "likes" ? 1 : 0,
+                  child: NestedScrollView(
+                    // header
+                    headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                      /*
                 SliverAppBar(
                   // floating: true, // 첫번째 요소가 아니지만 스크롤업할때 appBar 보여짐
                   pinned: true, // 스크롤 많이해도 appBar 계속 표시
@@ -131,14 +136,14 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                 ),
               */
 
-                    // title
-                    SliverAppBar(
-                      title: Text(data.name),
-                      actions: [
-                        // link, bio 수정
-                        IconButton(
-                          onPressed: () async {
-                            /*
+                      // title
+                      SliverAppBar(
+                        title: Text(data.name),
+                        actions: [
+                          // link, bio 수정
+                          IconButton(
+                            onPressed: () async {
+                              /*
                             
                             final data = await showCupertinoDialog(
                               context: context,
@@ -173,293 +178,387 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                             print(data);
                             */
 
-                            final newData =
-                                "ChangeData-${DateTime.now().toString()}";
+                              final result = await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  _bioTextEditingController.value =
+                                      TextEditingValue(text: data.bio);
+                                  _linkTextEditingController.value =
+                                      TextEditingValue(text: data.link);
 
-                            // profile 수정
-                            ref.read(usersProvider.notifier).upodateProfile(
-                                "bio $newData", "link $newData");
-                          },
-                          icon: const FaIcon(
-                            FontAwesomeIcons.pencil,
-                            size: Sizes.size20,
-                          ),
-                        ),
-                        // 설정
-                        IconButton(
-                          onPressed: _onGearPressed,
-                          icon: const FaIcon(
-                            FontAwesomeIcons.gear,
-                            size: Sizes.size20,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // 일반적인 위젯
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          Gaps.v20,
-
-                          // profile image
-                          Avatar(
-                            name: data.name,
-                            uid: data.uid,
-                            hasAvatar: data.hasAvatar,
-                          ),
-
-                          Gaps.v20,
-
-                          // account
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '@${data.name}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: Sizes.size18,
-                                ),
-                              ),
-                              Gaps.h5,
-                              FaIcon(
-                                FontAwesomeIcons.solidCircleCheck,
-                                size: Sizes.size16,
-                                color: Colors.blue.shade500,
-                              ),
-                            ],
-                          ),
-
-                          Gaps.v24,
-
-                          // info
-                          SizedBox(
-                            height: Sizes.size44,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // ## Challenge 1
-                                const UserAccount(
-                                  number: '97',
-                                  title: 'Following',
-                                ),
-                                VerticalDivider(
-                                  width: Sizes.size32, // 사이 공간
-                                  thickness: Sizes.size1, // 선의 굵기
-                                  color: Colors.grey.shade400,
-                                  indent: Sizes.size14, // 시작점
-                                  endIndent: Sizes.size14, // 끝나는점
-                                ),
-                                const UserAccount(
-                                  number: '10.5M',
-                                  title: 'Followers',
-                                ),
-                                VerticalDivider(
-                                  width: Sizes.size32, // 사이 공간
-                                  thickness: Sizes.size1, // 선의 굵기
-                                  color: Colors.grey.shade400,
-                                  indent: Sizes.size14, // 시작점
-                                  endIndent: Sizes.size14, // 끝나는점
-                                ),
-                                const UserAccount(
-                                    number: '194.5M', title: 'Likes'),
-                              ],
-                            ),
-                          ),
-
-                          Gaps.v5,
-
-                          // button
-                          // ## challenge 2
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Follows
-                              Flexible(
-                                child: FractionallySizedBox(
-                                  widthFactor: .5,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: Sizes.size12),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(Sizes.size4),
+                                  return AlertDialog(
+                                    actions: [
+                                      const CloseButton(),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, "OK");
+                                        },
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                    content: Form(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          // BIO
+                                          TextFormField(
+                                            controller:
+                                                _bioTextEditingController,
+                                            decoration: InputDecoration(
+                                              prefixIcon: const Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [Text("BIO")],
+                                              ),
+                                              suffixIcon: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      _bioTextEditingController
+                                                              .value =
+                                                          TextEditingValue
+                                                              .empty;
+                                                    },
+                                                    icon: const FaIcon(
+                                                        FontAwesomeIcons
+                                                            .eraser),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          // LINK
+                                          TextFormField(
+                                            controller:
+                                                _linkTextEditingController,
+                                            decoration: InputDecoration(
+                                              prefixIcon: const Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [Text("LINK")],
+                                              ),
+                                              suffixIcon: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      _linkTextEditingController
+                                                              .value =
+                                                          TextEditingValue
+                                                              .empty;
+                                                    },
+                                                    icon: const FaIcon(
+                                                        FontAwesomeIcons
+                                                            .eraser),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    child: const Text(
-                                      'Follow',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                  );
+                                },
+                              );
 
-                              Gaps.h5,
+                              if (result != null) {
+                                final newBio = _bioTextEditingController.text;
+                                final newLink = _linkTextEditingController.text;
 
-                              // youtube
-                              Container(
-                                width: Sizes.size44,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: Sizes.size12),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: FaIcon(
-                                    FontAwesomeIcons.youtube,
-                                    size: Sizes.size20,
-                                  ),
-                                ),
-                              ),
-
-                              Gaps.h5,
-
-                              // arrow
-                              Container(
-                                width: Sizes.size44,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: Sizes.size12),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: FaIcon(
-                                    FontAwesomeIcons.sortDown,
-                                    size: Sizes.size20,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          Gaps.v10,
-
-                          // desc
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Sizes.size32),
-                            child: Text(
-                              data.bio,
-                              textAlign: TextAlign.center,
+                                // profile 수정
+                                ref
+                                    .read(usersProvider.notifier)
+                                    .upodateProfile(newBio, newLink);
+                              }
+                            },
+                            icon: const FaIcon(
+                              FontAwesomeIcons.pencil,
+                              size: Sizes.size20,
                             ),
                           ),
-
-                          Gaps.v5,
-
-                          // link
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const FaIcon(
-                                FontAwesomeIcons.link,
-                                size: Sizes.size12,
-                              ),
-                              Gaps.h4,
-                              Text(
-                                data.link,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                          // 설정
+                          IconButton(
+                            onPressed: _onGearPressed,
+                            icon: const FaIcon(
+                              FontAwesomeIcons.gear,
+                              size: Sizes.size20,
+                            ),
                           ),
-
-                          Gaps.v20,
                         ],
                       ),
-                    ),
 
-                    // Tabs
-                    SliverPersistentHeader(
-                      delegate: PersistentTabBar(),
-                      pinned: true,
-                    ),
-                  ],
-
-                  // scrollable
-                  body: TabBarView(
-                    children: [
-                      GridView.builder(
-                        keyboardDismissBehavior:
-                            ScrollViewKeyboardDismissBehavior
-                                .onDrag, // drag할대마다 키보ㅡ드 자동 사라짐
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: size.width > Breakpoints.lg
-                              ? 5
-                              : 3, // column 몇개 가질지
-                          crossAxisSpacing: size.width > Breakpoints.lg
-                              ? Sizes.size4
-                              : Sizes.size2, // column 사이 간격
-                          mainAxisSpacing: size.width > Breakpoints.lg
-                              ? Sizes.size4
-                              : Sizes.size2, // row 사이 간격
-                          childAspectRatio: 9 / 14, // 이미지 아래 다른 요소들이 있어서 세로 키움
-                        ),
-                        padding: EdgeInsets.zero,
-                        itemCount: 20,
-                        // ## challenge 1
-                        itemBuilder: (context, index) => Stack(
+                      // 일반적인 위젯
+                      SliverToBoxAdapter(
+                        child: Column(
                           children: [
-                            // image
-                            Positioned.fill(
-                              child: AspectRatio(
-                                aspectRatio: 9 / 14,
-                                child: FadeInImage.assetNetwork(
-                                  placeholder:
-                                      'assets/images/devzooit_profile.png',
-                                  image:
-                                      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1473&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                  fit: BoxFit.cover,
+                            Gaps.v20,
+
+                            // profile image
+                            Avatar(
+                              name: data.name,
+                              uid: data.uid,
+                              hasAvatar: data.hasAvatar,
+                            ),
+
+                            Gaps.v20,
+
+                            // account
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '@${data.name}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: Sizes.size18,
+                                  ),
                                 ),
+                                Gaps.h5,
+                                FaIcon(
+                                  FontAwesomeIcons.solidCircleCheck,
+                                  size: Sizes.size16,
+                                  color: Colors.blue.shade500,
+                                ),
+                              ],
+                            ),
+
+                            Gaps.v24,
+
+                            // info
+                            SizedBox(
+                              height: Sizes.size44,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // ## Challenge 1
+                                  const UserAccount(
+                                    number: '97',
+                                    title: 'Following',
+                                  ),
+                                  VerticalDivider(
+                                    width: Sizes.size32, // 사이 공간
+                                    thickness: Sizes.size1, // 선의 굵기
+                                    color: Colors.grey.shade400,
+                                    indent: Sizes.size14, // 시작점
+                                    endIndent: Sizes.size14, // 끝나는점
+                                  ),
+                                  const UserAccount(
+                                    number: '10.5M',
+                                    title: 'Followers',
+                                  ),
+                                  VerticalDivider(
+                                    width: Sizes.size32, // 사이 공간
+                                    thickness: Sizes.size1, // 선의 굵기
+                                    color: Colors.grey.shade400,
+                                    indent: Sizes.size14, // 시작점
+                                    endIndent: Sizes.size14, // 끝나는점
+                                  ),
+                                  const UserAccount(
+                                    number: '194.5M',
+                                    title: 'Likes',
+                                  ),
+                                ],
                               ),
                             ),
-                            // video count
-                            const Positioned(
-                              bottom: 0,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  left: Sizes.size7,
-                                  bottom: Sizes.size4,
-                                ),
-                                child: Row(
-                                  children: [
-                                    FaIcon(
-                                      FontAwesomeIcons.play,
-                                      color: Colors.white,
-                                      size: Sizes.size14,
-                                    ),
-                                    Gaps.h7,
-                                    Text(
-                                      '4.1K',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: Sizes.size14,
+
+                            Gaps.v5,
+
+                            // button
+                            // ## challenge 2
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Follows
+                                Flexible(
+                                  child: FractionallySizedBox(
+                                    widthFactor: .5,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: Sizes.size12),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(Sizes.size4),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Follow',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
+
+                                Gaps.h5,
+
+                                // youtube
+                                Container(
+                                  width: Sizes.size44,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: Sizes.size12),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.youtube,
+                                      size: Sizes.size20,
+                                    ),
+                                  ),
+                                ),
+
+                                Gaps.h5,
+
+                                // arrow
+                                Container(
+                                  width: Sizes.size44,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: Sizes.size12),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.sortDown,
+                                      size: Sizes.size20,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            Gaps.v10,
+
+                            // desc
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Sizes.size32),
+                              child: Text(
+                                data.bio,
+                                textAlign: TextAlign.center,
                               ),
                             ),
+
+                            Gaps.v5,
+
+                            // link
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const FaIcon(
+                                  FontAwesomeIcons.link,
+                                  size: Sizes.size12,
+                                ),
+                                Gaps.h4,
+                                Text(
+                                  data.link,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+
+                            Gaps.v20,
                           ],
                         ),
                       ),
-                      const Center(child: Text('two')),
+
+                      // Tabs
+                      SliverPersistentHeader(
+                        delegate: PersistentTabBar(),
+                        pinned: true,
+                      ),
                     ],
+
+                    // scrollable
+                    body: TabBarView(
+                      children: [
+                        GridView.builder(
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior
+                                  .onDrag, // drag할대마다 키보ㅡ드 자동 사라짐
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: size.width > Breakpoints.lg
+                                ? 5
+                                : 3, // column 몇개 가질지
+                            crossAxisSpacing: size.width > Breakpoints.lg
+                                ? Sizes.size4
+                                : Sizes.size2, // column 사이 간격
+                            mainAxisSpacing: size.width > Breakpoints.lg
+                                ? Sizes.size4
+                                : Sizes.size2, // row 사이 간격
+                            childAspectRatio:
+                                9 / 14, // 이미지 아래 다른 요소들이 있어서 세로 키움
+                          ),
+                          padding: EdgeInsets.zero,
+                          itemCount: 20,
+                          // ## challenge 1
+                          itemBuilder: (context, index) => Stack(
+                            children: [
+                              // image
+                              Positioned.fill(
+                                child: AspectRatio(
+                                  aspectRatio: 9 / 14,
+                                  child: FadeInImage.assetNetwork(
+                                    placeholder:
+                                        'assets/images/devzooit_profile.png',
+                                    image:
+                                        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1473&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              // video count
+                              const Positioned(
+                                bottom: 0,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    left: Sizes.size7,
+                                    bottom: Sizes.size4,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      FaIcon(
+                                        FontAwesomeIcons.play,
+                                        color: Colors.white,
+                                        size: Sizes.size14,
+                                      ),
+                                      Gaps.h7,
+                                      Text(
+                                        '4.1K',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: Sizes.size14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Center(child: Text('two')),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
   }
 }

@@ -65,3 +65,30 @@ export const onVideoCreated = functions.firestore.document("videos/{videoId}").o
 
 });
 
+// 좋아요시 좋아요수 증가
+export const onLikedCreated = functions.firestore.document("likes/{likeId}").onCreate(async (snapshot, context) => {
+    const db = admin.firestore();
+    const [videoId, _] = snapshot.id.split("000");
+    
+    db.collection("videos")
+        .doc(videoId)    // 비디오 찾기
+        .update({   // 좋아요 개수 변경
+            likes: admin.firestore.FieldValue.increment(1), // 값이 뭐든 가져와서 1 증가
+        });
+
+    // TODO - 유저 likes doc에 videoId 추가
+});
+
+// 좋아요 취소시 좋아요수 감소
+export const onLikedRemoved = functions.firestore.document("likes/{likeId}").onDelete(async (snapshot, context) => {
+    const db = admin.firestore();
+    const [videoId, _] = snapshot.id.split("000");
+    
+    db.collection("videos")
+        .doc(videoId)    // 비디오 찾기
+        .update({   // 좋아요 개수 변경
+            likes: admin.firestore.FieldValue.increment(-1), // 값이 뭐든 가져와서 1 감소
+        });
+    // TODO - 유저 likes doc에 videoId 삭제
+
+});

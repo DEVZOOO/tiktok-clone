@@ -38,10 +38,10 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
     return;
 
     // nextPage 호출해주면 현재 어느 페이지에 있는지 알 필요 없이 다음 페이지로 넘어가게 해줌
-    _pageController.nextPage(
-      duration: _scrollDuration,
-      curve: _scrollCurve,
-    );
+    // _pageController.nextPage(
+    //   duration: _scrollDuration,
+    //   curve: _scrollCurve,
+    // );
   }
 
   /// 새로고침

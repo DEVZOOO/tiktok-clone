@@ -9,6 +9,8 @@ class VideosRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  String _makeLikesDocName(String videoId, String uid) => "${videoId}000$uid";
+
   // upload
   UploadTask uploadVideoFile(File video, String uid) {
     // save storage
@@ -52,16 +54,28 @@ class VideosRepository {
   }
 
   /// 좋아요 처리
-  Future<void> likeVideo(String videoId, String uid) async {
+  Future<void> toggleLikeVideo(String videoId, String uid) async {
     // 이미 좋아요 했는지 찾기
-    final query = _db.collection("likes").doc("${videoId}000$uid");
+    final query = _db.collection("likes").doc(_makeLikesDocName(videoId, uid));
     final like = await query.get();
     // 좋아요 정보 없다면 추가하기
     if (!like.exists) {
-      query.set({
+      await query.set({
         "createAt": DateTime.now().millisecondsSinceEpoch,
       });
+    } else {
+      // 있다면 삭제하기
+      await query.delete();
     }
+  }
+
+  /// 좋아요 상태
+  Future<bool> isLiked(String videoId, String uid) async {
+    final like = await _db
+        .collection("likes")
+        .doc(_makeLikesDocName(videoId, uid))
+        .get();
+    return like.exists;
   }
 }
 
