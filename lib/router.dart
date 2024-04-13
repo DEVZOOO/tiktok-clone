@@ -96,8 +96,9 @@ final routerProvider = Provider((ref) {
             path: ChatDetailScreen.routeUrl,
             name: ChatDetailScreen.routeName,
             builder: (context, state) {
+              print(state.params);
               final chatId = state.params['chatId']!;
-              final userName = state.params['userName']!;
+              final userName = state.extra as String;
               return ChatDetailScreen(
                 chatId: chatId,
                 userName: userName,

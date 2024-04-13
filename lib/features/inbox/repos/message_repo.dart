@@ -28,12 +28,8 @@ class MessageRepository {
   }
 
   /// 메세지 전송
-  Future<void> sendMessage(MessageModel msg) async {
-    await _db
-        .collection("chat_rooms")
-        .doc("eIPL22rGjniqz3kYqkFf")
-        .collection("texts")
-        .add(
+  Future<void> sendMessage(MessageModel msg, String roomId) async {
+    await _db.collection("chat_rooms").doc(roomId).collection("texts").add(
           msg.toJson(),
         );
   }

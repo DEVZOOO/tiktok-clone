@@ -40,6 +40,17 @@ class UserRepository {
     // storage 공간에 업로드
     final task = await fileRef.putFile(file);
   }
+
+  /// 전체 유저 리스트 조회
+  Future<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
+      String? exceptUid) async {
+    var query = _db.collection("users");
+
+    if (exceptUid != null) {
+      return query.where("uid", isNotEqualTo: exceptUid).get();
+    }
+    return query.get();
+  }
 }
 
 final userRepo = Provider((ref) => UserRepository());

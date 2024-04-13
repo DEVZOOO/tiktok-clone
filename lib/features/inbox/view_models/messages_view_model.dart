@@ -6,12 +6,14 @@ import 'package:tiktok_clone/features/authentication/repos/authentication_repo.d
 import 'package:tiktok_clone/features/inbox/models/message_model.dart';
 import 'package:tiktok_clone/features/inbox/repos/message_repo.dart';
 
-class MessagesViewModel extends AsyncNotifier<void> {
+class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
   late final MessageRepository _repo;
+  late final String _roomId;
 
   @override
-  FutureOr<void> build() {
+  FutureOr<void> build(String roomId) {
     _repo = ref.read(messageRepo);
+    _roomId = roomId;
   }
 
   /// 메세지 전송
@@ -27,12 +29,13 @@ class MessagesViewModel extends AsyncNotifier<void> {
         createdAt: DateTime.now().millisecondsSinceEpoch,
       );
 
-      _repo.sendMessage(message);
+      _repo.sendMessage(message, _roomId);
     });
   }
 }
 
-final messageProvider = AsyncNotifierProvider<MessagesViewModel, void>(
+final messageProvider =
+    AsyncNotifierProvider.family<MessagesViewModel, void, String>(
   () => MessagesViewModel(),
 );
 

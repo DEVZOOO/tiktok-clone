@@ -1,12 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_room_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chat_room_view_model.dart';
+import 'package:tiktok_clone/utils.dart';
 
 /// DM
 class ChatsScreen extends ConsumerStatefulWidget {
@@ -24,19 +27,79 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
 
   final Duration _duration = const Duration(milliseconds: 300);
 
+  /// 신규 채팅 유저
+  String? _newChatUserId;
+
   /// 리스트 아이템 추가
-  void _addItem() {
+  void _addItem() async {
+    /*
     if (_key.currentState != null) {
-      /*
+      
       // 아이템 추가, index : 위치
       _key.currentState!.insertItem(
         _items.length,
         duration: _duration,
       );
       _items.add(_items.length);
-      */
-      // TODO - 유저 선택 후 채팅방 추가
-      // ref.read(chatRoomProvider.notifier).createNewChat(uid);
+    }
+    */
+
+    if (kDebugMode) {
+      print("_addItem");
+    }
+
+    final uid = ref.read(authRepo).user!.uid;
+    final users = await ref.read(chatRoomProvider.notifier).getAllUsers(uid);
+
+    if (!mounted) {
+      return;
+    }
+
+    // TODO - 유저 선택 후 채팅방 추가
+    _newChatUserId = null;
+    final result = await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) => AlertDialog(
+            actions: [
+              const CloseButton(),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, "OK");
+                },
+                child: const Text("OK"),
+              ),
+            ],
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  final user = users[index];
+                  return RadioListTile(
+                    groupValue: _newChatUserId,
+                    value: user.uid,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _newChatUserId = value;
+                      });
+                    },
+                    title: Text(user.name),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (result != null) {
+      if (_newChatUserId != null) {
+        ref.read(chatRoomProvider.notifier).createNewChat(_newChatUserId!);
+      }
     }
   }
 
@@ -72,21 +135,19 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
       ChatDetailScreen.routeName,
       params: {
         "chatId": id,
-        "userName": userName,
       },
+      extra: userName,
     );
   }
 
   /// tile 생성 메소드
   Widget _makeTile(int index, ChatRoomModel chat) {
     final user = ref.read(authRepo).user!;
-    final name = chat.personA == user.uid ? chat.personB : chat.personB;
+    final name = chat.personA == user.uid ? chat.personB : chat.personA;
     return ListTile(
       leading: CircleAvatar(
         radius: 30,
-        foregroundImage: NetworkImage(
-          'https://firebasestorage.googleapis.com/v0/b/judy-tiktok-clone.appspot.com/o/avatars%2F$name?alt=media&token=029a2805-8f99-445e-ae0d-c93c02ad9ab5',
-        ),
+        foregroundImage: NetworkImage(getProfileImageUrl(name)),
         child: Text(name),
       ),
       title: Row(
@@ -95,6 +156,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         children: [
           Text(
             name,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
             ),
@@ -129,27 +191,32 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
       ),
       body: ref.watch(chatRoomProvider).when(
             data: (data) {
-              return data.isNotEmpty
-                  ? AnimatedList(
-                      key: _key,
-                      padding:
-                          const EdgeInsets.symmetric(vertical: Sizes.size10),
-                      initialItemCount: data.length,
-                      itemBuilder: (context, index, animation) {
-                        final chat = data[index];
-                        return FadeTransition(
-                          key: UniqueKey(),
-                          opacity: animation,
-                          child: SizeTransition(
-                            sizeFactor: animation,
-                            child: _makeTile(index, chat),
-                          ),
-                        );
-                      },
-                    )
-                  : const Center(
-                      child: Text("Start New Chat!"),
-                    );
+              return RefreshIndicator(
+                onRefresh: () async {
+                  return ref.read(chatRoomProvider.notifier).refresh();
+                },
+                child: data.isNotEmpty
+                    ? AnimatedList(
+                        key: _key,
+                        padding:
+                            const EdgeInsets.symmetric(vertical: Sizes.size10),
+                        initialItemCount: data.length,
+                        itemBuilder: (context, index, animation) {
+                          final chat = data[index];
+                          return FadeTransition(
+                            key: UniqueKey(),
+                            opacity: animation,
+                            child: SizeTransition(
+                              sizeFactor: animation,
+                              child: _makeTile(index, chat),
+                            ),
+                          );
+                        },
+                      )
+                    : const Center(
+                        child: Text("Start New Chat!"),
+                      ),
+              );
             },
             error: (error, stackTrace) => Center(
               child: Text(error.toString()),

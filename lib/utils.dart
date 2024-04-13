@@ -16,3 +16,7 @@ void showFirebaseErrorSnack(BuildContext context, Object? error) =>
         showCloseIcon: true,
       ),
     );
+
+/// 유저 프로필 이미지 경로 반환
+String getProfileImageUrl(String uid) =>
+    "https://firebasestorage.googleapis.com/v0/b/judy-tiktok-clone.appspot.com/o/avatars%2F$uid?alt=media&token=029a2805-8f99-445e-ae0d-c93c02ad9ab5";

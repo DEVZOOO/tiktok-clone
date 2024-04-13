@@ -5,6 +5,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:tiktok_clone/features/inbox/view_models/messages_view_model.dart';
+import 'package:tiktok_clone/utils.dart';
 
 /// 대화창
 class ChatDetailScreen extends ConsumerStatefulWidget {
@@ -53,7 +54,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
     final text = _textEditingController.text;
     if (text != "") {
-      ref.read(messageProvider.notifier).sendMessages(text);
+      ref.read(messageProvider(widget.chatId).notifier).sendMessages(text);
     }
 
     _textEditingController.clear(); // 입력값 삭제
@@ -65,7 +66,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(messageProvider).isLoading;
+    final isLoading = ref.watch(messageProvider(widget.chatId)).isLoading;
     return GestureDetector(
       onTap: _unfocusAll,
       child: Scaffold(
@@ -77,11 +78,14 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
             // ## Challenge 1
             leading: Stack(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: Sizes.size24,
-                  foregroundImage: NetworkImage(
-                      'https://avatars.githubusercontent.com/u/104175767?v=4'),
-                  child: Text('Judy'),
+                  foregroundImage:
+                      NetworkImage(getProfileImageUrl(widget.userName)),
+                  child: Text(
+                    widget.userName,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 Positioned(
                   right: 0,
@@ -102,10 +106,11 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
               ],
             ),
             title: Text(
-              'Judy (${widget.chatId})',
+              widget.userName,
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
             subtitle: const Text('Active now'),
             trailing: const Row(
