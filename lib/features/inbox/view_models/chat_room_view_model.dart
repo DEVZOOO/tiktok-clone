@@ -6,6 +6,8 @@ import 'package:tiktok_clone/features/inbox/models/chat_room_model.dart';
 import 'package:tiktok_clone/features/inbox/repos/message_repo.dart';
 import 'package:tiktok_clone/features/users/models/user_profile_model.dart';
 import 'package:tiktok_clone/features/users/repos/user_repository.dart';
+import 'package:tiktok_clone/features/users/view_models/users_view_model.dart';
+import 'package:tiktok_clone/utils.dart';
 
 class ChatRoomViewModel extends AsyncNotifier<List<ChatRoomModel>> {
   late final MessageRepository _repository;
@@ -48,21 +50,32 @@ class ChatRoomViewModel extends AsyncNotifier<List<ChatRoomModel>> {
 
   // refresh chatRoomList
   Future<void> refresh() async {
+    state = const AsyncValue.loading();
     final list = await _fetchChatRooms();
     _rooms = list;
     state = AsyncValue.data(list);
   }
 
   /// 신규 채팅방 생성
-  Future<void> createNewChat(String targetUid) async {
-    final user = ref.read(authRepo).user!;
+  Future<void> createNewChat(UserProfileModel targetUser) async {
+    final user = ref.read(usersProvider).value!;
     final chat = ChatRoomModel(
       id: "",
       personA: user.uid,
-      personB: targetUid,
+      personB: targetUser.uid,
+      personAname: user.name,
+      personBname: targetUser.name,
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
     await _repository.createNewChat(chat);
+  }
+
+  /// 채팅방 삭제
+  Future<void> deleteChatRoom(String roomId) async {
+    state = const AsyncValue.loading();
+    await _repository.deleteChatRoom(roomId);
+    state = AsyncValue.data(
+        state.value!.where((element) => element.id != roomId).toList());
   }
 }
 

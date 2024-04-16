@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tiktok_clone/features/users/view_models/avatar_view_model.dart';
+import 'package:tiktok_clone/utils.dart';
 
 /// 프로필 이미지
 class Avatar extends ConsumerWidget {
@@ -51,8 +52,7 @@ class Avatar extends ConsumerWidget {
               radius: 50,
               foregroundImage: hasAvatar
                   ? NetworkImage(
-                      'https://firebasestorage.googleapis.com/v0/b/judy-tiktok-clone.appspot.com/o/avatars%2F$uid?alt=media&token=029a2805-8f99-445e-ae0d-c93c02ad9ab5&v=${DateTime.now().toString()}',
-                    )
+                      '${getProfileImageUrl(uid)}&v=${DateTime.now().toString()}')
                   : null,
               backgroundColor: Theme.of(context).primaryColor,
               child: Text(name),

@@ -13,11 +13,13 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
   static const String routeName = "chartDetail";
 
   final String chatId;
+  final String uid;
   final String userName;
 
   const ChatDetailScreen({
     super.key,
     required this.chatId,
+    required this.uid,
     required this.userName,
   });
 
@@ -80,8 +82,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
               children: [
                 CircleAvatar(
                   radius: Sizes.size24,
-                  foregroundImage:
-                      NetworkImage(getProfileImageUrl(widget.userName)),
+                  foregroundImage: NetworkImage(getProfileImageUrl(widget.uid)),
                   child: Text(
                     widget.userName,
                     overflow: TextOverflow.ellipsis,

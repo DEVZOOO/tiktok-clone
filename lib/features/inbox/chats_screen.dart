@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_room_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chat_room_view_model.dart';
+import 'package:tiktok_clone/features/users/models/user_profile_model.dart';
 import 'package:tiktok_clone/utils.dart';
 
 /// DM
@@ -28,7 +28,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   final Duration _duration = const Duration(milliseconds: 300);
 
   /// 신규 채팅 유저
-  String? _newChatUserId;
+  UserProfileModel? _newChatUser;
 
   /// 리스트 아이템 추가
   void _addItem() async {
@@ -55,8 +55,8 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
       return;
     }
 
-    // TODO - 유저 선택 후 채팅방 추가
-    _newChatUserId = null;
+    // 유저 선택 후 채팅방 추가
+    _newChatUser = null;
     final result = await showDialog(
       context: context,
       builder: (context) {
@@ -79,11 +79,11 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 itemBuilder: (context, index) {
                   final user = users[index];
                   return RadioListTile(
-                    groupValue: _newChatUserId,
+                    groupValue: _newChatUser?.uid,
                     value: user.uid,
                     onChanged: (String? value) {
                       setState(() {
-                        _newChatUserId = value;
+                        _newChatUser = user;
                       });
                     },
                     title: Text(user.name),
@@ -97,8 +97,8 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     );
 
     if (result != null) {
-      if (_newChatUserId != null) {
-        ref.read(chatRoomProvider.notifier).createNewChat(_newChatUserId!);
+      if (_newChatUser != null) {
+        ref.read(chatRoomProvider.notifier).createNewChat(_newChatUser!);
       }
     }
   }
@@ -117,11 +117,18 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         ),
         duration: _duration,
       );
+
+      // DB 삭제
+      ref.read(chatRoomProvider.notifier).deleteChatRoom(chat.id);
     }
   }
 
   /// 채팅 입장
-  void _onChatTap(String id, String userName) {
+  void _onChatTap({
+    required String roomId,
+    required String uid,
+    required String name,
+  }) {
     /*
     Navigator.push(
       context,
@@ -134,20 +141,24 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     context.pushNamed(
       ChatDetailScreen.routeName,
       params: {
-        "chatId": id,
+        "chatId": roomId,
       },
-      extra: userName,
+      extra: {
+        "uid": uid,
+        "name": name,
+      },
     );
   }
 
   /// tile 생성 메소드
   Widget _makeTile(int index, ChatRoomModel chat) {
     final user = ref.read(authRepo).user!;
-    final name = chat.personA == user.uid ? chat.personB : chat.personA;
+    final uid = chat.personA == user.uid ? chat.personB : chat.personA;
+    final name = chat.personA == user.uid ? chat.personBname : chat.personAname;
     return ListTile(
       leading: CircleAvatar(
         radius: 30,
-        foregroundImage: NetworkImage(getProfileImageUrl(name)),
+        foregroundImage: NetworkImage(getProfileImageUrl(uid)),
         child: Text(name),
       ),
       title: Row(
@@ -171,7 +182,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         ],
       ),
       subtitle: const Text('Don\'t forget to make video.'),
-      onTap: () => _onChatTap(chat.id, name),
+      onTap: () => _onChatTap(roomId: chat.id, uid: uid, name: name),
       onLongPress: () => _deleteItem(index, chat),
     );
   }
@@ -192,9 +203,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
       body: ref.watch(chatRoomProvider).when(
             data: (data) {
               return RefreshIndicator(
-                onRefresh: () async {
-                  return ref.read(chatRoomProvider.notifier).refresh();
-                },
+                color: Theme.of(context).primaryColor,
                 child: data.isNotEmpty
                     ? AnimatedList(
                         key: _key,
@@ -213,9 +222,17 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                           );
                         },
                       )
-                    : const Center(
-                        child: Text("Start New Chat!"),
+                    : SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * .7,
+                          child: const Center(child: Text("Start New Chat!")),
+                        ),
                       ),
+                onRefresh: () async {
+                  return ref.watch(chatRoomProvider.notifier).refresh();
+                },
               );
             },
             error: (error, stackTrace) => Center(

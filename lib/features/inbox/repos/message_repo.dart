@@ -33,6 +33,11 @@ class MessageRepository {
           msg.toJson(),
         );
   }
+
+  /// 채팅방 삭제
+  Future<void> deleteChatRoom(String roomId) async {
+    await _db.collection("chat_rooms").doc(roomId).delete();
+  }
 }
 
 final messageRepo = Provider((ref) => MessageRepository());
