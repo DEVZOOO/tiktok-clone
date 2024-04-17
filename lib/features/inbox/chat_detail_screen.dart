@@ -69,6 +69,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(messageProvider(widget.chatId)).isLoading;
+    final isDark = isDarkMode(context);
     return GestureDetector(
       onTap: _unfocusAll,
       child: Scaffold(
@@ -90,15 +91,15 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                 ),
                 Positioned(
                   right: 0,
-                  bottom: -3, // border width 만큼 아래로 이동
+                  bottom: 0, // border width 만큼 아래로 이동
                   child: Container(
-                    width: Sizes.size20,
-                    height: Sizes.size20,
+                    width: Sizes.size16,
+                    height: Sizes.size16,
                     decoration: BoxDecoration(
                       color: Colors.teal,
                       border: Border.all(
                         color: Colors.white,
-                        width: Sizes.size3,
+                        width: Sizes.size2,
                       ),
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                     ),
@@ -120,13 +121,11 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                 FaIcon(
                   FontAwesomeIcons.flag,
                   size: Sizes.size20,
-                  color: Colors.black,
                 ),
                 Gaps.h32,
                 FaIcon(
                   FontAwesomeIcons.ellipsis,
                   size: Sizes.size20,
-                  color: Colors.black,
                 ),
               ],
             ),
@@ -198,7 +197,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
               bottom: 0,
               width: MediaQuery.of(context).size.width,
               child: BottomAppBar(
-                color: Colors.grey.shade100,
+                color: isDark ? null : Colors.grey.shade100,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: Sizes.size10,
@@ -218,26 +217,26 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                             maxLines: null,
                             enableSuggestions: false, // 자동완성 비허용
                             style: const TextStyle(
-                              color: Colors.black,
+                              // color: Colors.black,
                               fontSize: Sizes.size16,
                             ),
                             decoration: InputDecoration(
                               hintText: 'Send a message ...',
-                              fillColor: Colors.white,
+                              fillColor: isDark ? null : Colors.white,
                               filled: true,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 borderSide: BorderSide.none,
                               ),
                               // smile icon
-                              suffixIcon: const Row(
+                              suffixIcon: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   FaIcon(
                                     FontAwesomeIcons.faceSmile,
                                     size: Sizes.size20,
-                                    color: Colors.black,
+                                    color: isDark ? Colors.white : Colors.black,
                                   ),
                                 ],
                               ),
@@ -256,15 +255,17 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                           decoration: BoxDecoration(
                             color: _isWriting
                                 ? Theme.of(context).primaryColor
-                                : Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(50),
+                                : null, // Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: FaIcon(
                             isLoading
                                 ? FontAwesomeIcons.hourglass
                                 : FontAwesomeIcons.solidPaperPlane,
                             size: Sizes.size18,
-                            color: Colors.white,
+                            color: isDark && !_isWriting
+                                ? Colors.grey.shade700
+                                : Colors.white,
                           ),
                         ),
                       ),

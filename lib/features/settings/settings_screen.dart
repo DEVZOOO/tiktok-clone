@@ -41,11 +41,14 @@ class SettingsScreen extends ConsumerWidget {
           child: ListView(
             children: [
               // ## Challenge 라이트모드/다크모드
-              SwitchListTile.adaptive(
-                value: isDarkMode.value,
-                onChanged: (value) => isDarkMode.value = !isDarkMode.value,
-                title: const Text("Use Dark Mode"),
-                subtitle: const Text("다크모드를 사용합니다."),
+              ValueListenableBuilder(
+                valueListenable: isDarkMode,
+                builder: (context, value, child) => SwitchListTile.adaptive(
+                  value: isDarkMode.value,
+                  onChanged: (value) => isDarkMode.value = !isDarkMode.value,
+                  title: const Text("Use Dark Mode"),
+                  subtitle: const Text("다크모드를 사용합니다."),
+                ),
               ),
 
               // 음량조절

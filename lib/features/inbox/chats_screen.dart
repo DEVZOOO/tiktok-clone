@@ -175,7 +175,9 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
           Text(
             '2:16PM',
             style: TextStyle(
-              color: Colors.grey.shade500,
+              color: isDarkMode(context)
+                  ? Colors.grey.shade500
+                  : Colors.grey.shade700,
               fontSize: Sizes.size12,
             ),
           ),

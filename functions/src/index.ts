@@ -70,13 +70,51 @@ export const onLikedCreated = functions.firestore.document("likes/{likeId}").onC
     const db = admin.firestore();
     const [videoId, _] = snapshot.id.split("000");
     
-    db.collection("videos")
+    await db.collection("videos")
         .doc(videoId)    // 비디오 찾기
         .update({   // 좋아요 개수 변경
             likes: admin.firestore.FieldValue.increment(1), // 값이 뭐든 가져와서 1 증가
         });
 
     // TODO - 유저 likes doc에 videoId 추가
+
+
+    // send push message
+    // 1. 영상 정보 조회
+    const video = await(await db.collection("videos").doc(videoId).get()).data();
+    if (video) {
+        // 영상 생성자 uid 조회
+        const creatorUid = video.creatorUid;
+        // 영상 생성자 user 정보 조회
+        const user = await (await db.collection("users").doc(creatorUid).get()).data();
+        if (user) {
+            // 영상 생성자 token 획득
+            const token = user.token;
+            // * push알림 보내기
+            await admin.messaging().send({
+                token : token,
+                data : {
+                    screen : "123",
+                },
+                notification : {
+                    title : "someone liked your video",
+                    body : "Likes + 1! Congrats! ❤️",
+                },
+            });
+            /*
+            await admin.messaging().sendToDevice(token, {
+                data : {
+                    screen : "123",
+                },
+                notification : {
+                    title : "someone liked your video",
+                    body : "Likes + 1! Congrats! ❤️",
+                },
+            });
+            */
+        }
+    }
+
 });
 
 // 좋아요 취소시 좋아요수 감소

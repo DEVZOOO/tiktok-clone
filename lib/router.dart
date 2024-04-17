@@ -8,6 +8,7 @@ import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/features/inbox/activity_screen.dart';
 import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox/chats_screen.dart';
+import 'package:tiktok_clone/features/notifications/notifications_provider.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 import 'package:tiktok_clone/features/videos/views/video_recording_screen.dart';
 
@@ -28,82 +29,92 @@ final routerProvider = Provider((ref) {
       return null;
     },
     routes: [
-      // signup
-      GoRoute(
-        path: SignUpScreen.routeUrl,
-        name: SignUpScreen.routeName,
-        builder: (context, state) => const SignUpScreen(),
-      ),
-      // login
-      GoRoute(
-        path: LoginScreen.routeUrl,
-        name: LoginScreen.routeName,
-        builder: (context, state) => const LoginScreen(),
-      ),
-      // interests
-      GoRoute(
-        path: InterestsScreen.routeUrl,
-        name: InterestsScreen.routeName,
-        builder: (context, state) => const InterestsScreen(),
-      ),
-
-      // path variable
-      GoRoute(
-        path: "/:tab(home|discover|inbox|profile)",
-        name: MainNavigationScreen.routeName,
-        builder: (context, state) {
-          final tab = state.params['tab']!;
-          return MainNavigationScreen(
-            tab: tab,
-          );
+      ShellRoute(
+        builder: (context, state, child) {
+          // router통해서 들어오면 builder 메소드로 들어옴
+          ref.read(notificationsProvider(context));
+          return child; // GoRouter 객체
         },
-      ),
-
-      // Video
-      GoRoute(
-        path: VideoRecordingScreen.routeUrl,
-        name: VideoRecordingScreen.routeName,
-        pageBuilder: (context, state) => CustomTransitionPage(
-          child: const VideoRecordingScreen(),
-          transitionDuration: const Duration(milliseconds: 200),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final position = Tween(
-              begin: const Offset(0, 1),
-              end: Offset.zero,
-            ).animate(animation);
-
-            return SlideTransition(
-              position: position,
-              child: child,
-            );
-          },
-        ),
-      ),
-
-      // Inbox
-      GoRoute(
-        path: ActivityScreen.routeUrl,
-        name: ActivityScreen.routeName,
-        builder: (context, state) => const ActivityScreen(),
-      ),
-      // chats
-      GoRoute(
-        path: ChatsScreen.routeUrl,
-        name: ChatsScreen.routeName,
-        builder: (context, state) => const ChatsScreen(),
         routes: [
+          // signup
           GoRoute(
-            path: ChatDetailScreen.routeUrl,
-            name: ChatDetailScreen.routeName,
+            path: SignUpScreen.routeUrl,
+            name: SignUpScreen.routeName,
+            builder: (context, state) => const SignUpScreen(),
+          ),
+          // login
+          GoRoute(
+            path: LoginScreen.routeUrl,
+            name: LoginScreen.routeName,
+            builder: (context, state) => const LoginScreen(),
+          ),
+          // interests
+          GoRoute(
+            path: InterestsScreen.routeUrl,
+            name: InterestsScreen.routeName,
+            builder: (context, state) => const InterestsScreen(),
+          ),
+
+          // path variable
+          GoRoute(
+            path: "/:tab(home|discover|inbox|profile)",
+            name: MainNavigationScreen.routeName,
             builder: (context, state) {
-              final chatId = state.params['chatId']!;
-              final targetUser = state.extra as Map;
-              return ChatDetailScreen(
-                chatId: chatId,
-                uid: targetUser['uid'],
-                userName: targetUser['name'],
+              final tab = state.params['tab']!;
+              return MainNavigationScreen(
+                tab: tab,
               );
             },
+          ),
+
+          // Video
+          GoRoute(
+            path: VideoRecordingScreen.routeUrl,
+            name: VideoRecordingScreen.routeName,
+            pageBuilder: (context, state) => CustomTransitionPage(
+              child: const VideoRecordingScreen(),
+              transitionDuration: const Duration(milliseconds: 200),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                final position = Tween(
+                  begin: const Offset(0, 1),
+                  end: Offset.zero,
+                ).animate(animation);
+
+                return SlideTransition(
+                  position: position,
+                  child: child,
+                );
+              },
+            ),
+          ),
+
+          // Inbox
+          GoRoute(
+            path: ActivityScreen.routeUrl,
+            name: ActivityScreen.routeName,
+            builder: (context, state) => const ActivityScreen(),
+          ),
+          // chats
+          GoRoute(
+            path: ChatsScreen.routeUrl,
+            name: ChatsScreen.routeName,
+            builder: (context, state) => const ChatsScreen(),
+            routes: [
+              GoRoute(
+                path: ChatDetailScreen.routeUrl,
+                name: ChatDetailScreen.routeName,
+                builder: (context, state) {
+                  final chatId = state.params['chatId']!;
+                  final targetUser = state.extra as Map;
+                  return ChatDetailScreen(
+                    chatId: chatId,
+                    uid: targetUser['uid'],
+                    userName: targetUser['name'],
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),
