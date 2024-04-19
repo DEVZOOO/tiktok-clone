@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:tiktok_clone/features/users/view_models/users_view_model.dart';
 import 'package:tiktok_clone/features/videos/models/video_model.dart';
 import 'package:tiktok_clone/features/videos/repos/videos_repo.dart';
+import 'package:tiktok_clone/utils.dart';
 
 class UploadVideoViewModel extends AsyncNotifier<void> {
   late final VideosRepository _repository;
@@ -52,6 +54,13 @@ class UploadVideoViewModel extends AsyncNotifier<void> {
           context.pop(); // tab
         }
       });
+
+      if (state.hasError) {
+        if (kDebugMode) {
+          print(state.error.toString());
+        }
+        showFirebaseErrorSnack(context, state.error);
+      }
     }
   }
 }

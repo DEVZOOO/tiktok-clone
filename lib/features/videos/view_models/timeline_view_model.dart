@@ -14,7 +14,8 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
   Future<List<VideoModel>> _fetchVideos({
     int? lastItemCreatedAt,
   }) async {
-    final result = await _repository.fetchVideos(lastItemCreatedAt: null);
+    final result =
+        await _repository.fetchVideos(lastItemCreatedAt: lastItemCreatedAt);
     final videos = result.docs.map(
       (doc) => VideoModel.fromJson(
         json: doc.data(),
