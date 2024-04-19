@@ -44,8 +44,8 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     final profile = UserProfileModel(
       hasAvatar: false,
       email: credential.user!.email ?? "anon@anon.com",
-      bio: "undefined",
-      link: "undefined",
+      bio: "",
+      link: "",
       uid: credential.user!.uid,
       name: credential.user!.displayName ?? name,
       birthday: birthday,

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -135,7 +134,7 @@ class SettingsScreen extends ConsumerWidget {
 
               // alert
               ListTile(
-                title: const Text('Log out (IOS)'),
+                title: const Text('Log out'),
                 textColor: Colors.red,
                 onTap: () {
                   showCupertinoDialog(
@@ -153,8 +152,8 @@ class SettingsScreen extends ConsumerWidget {
                             isDestructiveAction: true,
                             child: const Text('YES'),
                             onPressed: () {
-                              // Navigator.of(context).pop();
                               ref.read(authRepo).signOut();
+                              Navigator.of(context).pop();
                               context.go("/");
                             },
                           ),
@@ -257,7 +256,6 @@ class SettingsScreen extends ConsumerWidget {
                 title: const Text('CheckboxListTile'),
                 activeColor: Theme.of(context).primaryColor,
               ),
-              */
               ListTile(
                 onTap: () => showAboutDialog(
                   context: context,
@@ -272,7 +270,11 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 subtitle: const Text('About this app....'),
               ),
-              const AboutListTile(),
+              */
+              const AboutListTile(
+                applicationVersion: "0.0.1",
+              ),
+              /*
               ListTile(
                 title: const Text('What is your birthday?'),
                 onTap: () async {
@@ -317,6 +319,7 @@ class SettingsScreen extends ConsumerWidget {
                   }
                 },
               ),
+              */
             ],
           ),
         ),

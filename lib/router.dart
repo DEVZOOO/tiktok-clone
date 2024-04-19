@@ -16,7 +16,7 @@ import 'package:tiktok_clone/features/videos/views/video_recording_screen.dart';
 final routerProvider = Provider((ref) {
   // ref.watch(authState); // stream 변화되면 dependency에 의해 리빌드되서 redirect됨
   return GoRouter(
-    initialLocation: "/inbox", // TEST
+    initialLocation: "/home", // TEST
     redirect: (context, state) {
       final isLoggedIn = ref.read(authRepo).isLoggedIn;
       if (!isLoggedIn) {

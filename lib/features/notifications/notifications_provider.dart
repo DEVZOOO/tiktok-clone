@@ -8,9 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:tiktok_clone/features/inbox/chats_screen.dart';
-import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/videos/views/video_recording_screen.dart';
-import 'package:tiktok_clone/utils.dart';
 
 class NotificationsProvider extends FamilyAsyncNotifier<void, BuildContext> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
